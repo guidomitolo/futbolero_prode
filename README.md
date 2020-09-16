@@ -1,4 +1,4 @@
 # futbolero 
 ## prode
 
-A football/soccer web page based on python and flask, feeded by football-data.org API.
+learning to code a football/soccer gambling web page based on python and flask. This project could not be possible without the amazing football-data.org API aid.
