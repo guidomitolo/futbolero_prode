@@ -1,0 +1,45 @@
+<html>
+    <head>
+        {% if title %}
+            <title>{{ title }} - Futbolero</title>
+        {% else %}
+            <title>Bienvenido a Futbolero</title>
+        {% endif %}
+        {{ moment.include_jquery() }}
+        {{ moment.include_moment() }}
+    </head>
+    <body>
+        <!-- navbar separated by line -->
+        <div>
+            Futbolero - 
+            <!-- url_for(), which generates URLs using its internal mapping of URLs to view functions. 
+            The argument to url_for() is the endpoint name, which is the name of the view function. -->
+            <a href="{{ url_for('index') }}">Inicio</a>
+            {% if current_user.is_anonymous %}
+            <a href="{{ url_for('login') }}">Ingresar</a>
+            {% else %}
+            <!-- the current user username is passed in the url_for function -->
+            <a href="{{ url_for('user', username=current_user.username) }}">Perfil</a>
+            <a href="{{ url_for('bet') }}">Apostar</a>
+            {% if user == current_user %}
+            <!-- Edit link appears when you are viewing your own profile, but not when you are viewing the profile of someone else. -->
+            <a href="{{ url_for('edit_profile') }}">Editar perfil</a>
+            {% endif %}
+            <a href="{{ url_for('logout') }}">Logout</a>
+            {% endif %}
+        </div>
+        <!-- line -->
+        <hr>
+        <!-- flashed message from login function -->
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </body>
+</html>

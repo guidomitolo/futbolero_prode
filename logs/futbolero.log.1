@@ -1,0 +1,109 @@
+2020-09-16 16:24:49,834 ERROR: Exception on / [GET] [in /home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py:1891]
+Traceback (most recent call last):
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask_login/utils.py", line 272, in decorated_view
+    return func(*args, **kwargs)
+  File "/home/guido/Dropbox/cs50x/psets_cs50/final_project/app/routes.py", line 25, in index
+    return render_template("index.html", title='Home Page', table=tabla, fixture=fixture)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/templating.py", line 137, in render_template
+    return _render(
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/templating.py", line 120, in _render
+    rv = template.render(context)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/environment.py", line 1090, in render
+    self.environment.handle_exception()
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/environment.py", line 832, in handle_exception
+    reraise(*rewrite_traceback_stack(source=source))
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/_compat.py", line 28, in reraise
+    raise value.with_traceback(tb)
+  File "/home/guido/Dropbox/cs50x/psets_cs50/final_project/app/templates/index.html", line 2, in top-level template code
+    {% extends "base.html" %}
+  File "/home/guido/Dropbox/cs50x/psets_cs50/final_project/app/templates/base.html", line 43, in top-level template code
+    {% block content %}{% endblock %}
+  File "/home/guido/Dropbox/cs50x/psets_cs50/final_project/app/templates/index.html", line 65, in block "content"
+    {% for row in table %}
+TypeError: 'NoneType' object is not iterable
+2020-09-16 16:25:05,575 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/psets_cs50/final_project/app/__init__.py:37]
+2020-09-16 16:25:28,021 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/psets_cs50/final_project/app/__init__.py:37]
+2020-09-16 16:25:45,167 ERROR: Exception on / [GET] [in /home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py:1891]
+Traceback (most recent call last):
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask_login/utils.py", line 272, in decorated_view
+    return func(*args, **kwargs)
+  File "/home/guido/Dropbox/cs50x/psets_cs50/final_project/app/routes.py", line 25, in index
+    return render_template("index.html", title='Home Page', table=tabla, fixture=fixture)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/templating.py", line 137, in render_template
+    return _render(
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/templating.py", line 120, in _render
+    rv = template.render(context)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/environment.py", line 1090, in render
+    self.environment.handle_exception()
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/environment.py", line 832, in handle_exception
+    reraise(*rewrite_traceback_stack(source=source))
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/_compat.py", line 28, in reraise
+    raise value.with_traceback(tb)
+  File "/home/guido/Dropbox/cs50x/psets_cs50/final_project/app/templates/index.html", line 2, in top-level template code
+    {% extends "base.html" %}
+  File "/home/guido/Dropbox/cs50x/psets_cs50/final_project/app/templates/base.html", line 43, in top-level template code
+    {% block content %}{% endblock %}
+  File "/home/guido/Dropbox/cs50x/psets_cs50/final_project/app/templates/index.html", line 65, in block "content"
+    {% for row in table %}
+TypeError: 'NoneType' object is not iterable
+2020-09-16 16:26:48,690 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/psets_cs50/final_project/app/__init__.py:37]
+2020-09-16 16:27:08,435 ERROR: Exception on / [GET] [in /home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py:1891]
+Traceback (most recent call last):
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask_login/utils.py", line 272, in decorated_view
+    return func(*args, **kwargs)
+  File "/home/guido/Dropbox/cs50x/psets_cs50/final_project/app/routes.py", line 24, in index
+    return render_template("index.html", title='Home Page', table=tabla, fixture=fixture)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/templating.py", line 137, in render_template
+    return _render(
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/templating.py", line 120, in _render
+    rv = template.render(context)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/environment.py", line 1090, in render
+    self.environment.handle_exception()
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/environment.py", line 832, in handle_exception
+    reraise(*rewrite_traceback_stack(source=source))
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/_compat.py", line 28, in reraise
+    raise value.with_traceback(tb)
+  File "/home/guido/Dropbox/cs50x/psets_cs50/final_project/app/templates/index.html", line 2, in top-level template code
+    {% extends "base.html" %}
+  File "/home/guido/Dropbox/cs50x/psets_cs50/final_project/app/templates/base.html", line 43, in top-level template code
+    {% block content %}{% endblock %}
+  File "/home/guido/Dropbox/cs50x/psets_cs50/final_project/app/templates/index.html", line 65, in block "content"
+    {% for row in table %}
+TypeError: 'NoneType' object is not iterable
+2020-09-16 16:27:34,932 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/psets_cs50/final_project/app/__init__.py:37]

@@ -1,0 +1,33 @@
+<!-- i can now simplify index.html by making it inherit from base.html -->
+{% extends "base.html" %} 
+
+{% block content %}
+    <h1>Hi, {{ current_user.username }}!</h1>
+    <div>
+        <table>
+            <p>Próxima fecha</p>
+            <thead>
+                <tr>
+                    <th>Temporada</th>
+                    <th>Fase</th>
+                    <th>Fecha</th>
+                    <th>Local</th>
+                    <th>Resultado</th>
+                    <th>Visitante</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for row in fixture %}
+                <tr>
+                    <td>{{ row.season }}</td>
+                    <td>{{ row.round }}</td>
+                    <td>{{ row.date }}</td>
+                    <td>{{ row.homeTeam }}</td>
+                    <td>{{ row.score }}</td>
+                    <td>{{ row.awayTeam }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

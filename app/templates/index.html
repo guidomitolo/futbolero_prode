@@ -1,0 +1,86 @@
+<!-- i can now simplify index.html by making it inherit from base.html -->
+{% extends "base.html" %} 
+
+{% block content %}
+    <h1>Hi, {{ current_user.username }}!</h1>
+    <div>
+        <table>
+            <p>Última fecha</p>
+            <thead>
+                <tr>
+                    <th>Temporada</th>
+                    <th>Fase</th>
+                    <th>Fecha</th>
+                    <th>Local</th>
+                    <!-- <th></th> -->
+                    <th>Resultado</th>
+                    <!-- <th></th> -->
+                    <th>Visitante</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for row in fixture %}
+                <tr>
+                    <td>{{ row.season }}</td>
+                    <td>{{ row.round }}</td>
+                    <td>{{ row.date }}</td>
+                    <td>{{ row.homeTeam }}</td>
+                    <!-- <td>
+                        <img src={{ row.homeTeam_logo }} alt="Lamp" width="32" height="32">
+                    </td> -->
+                    {% if row.score[0] == None %}
+                    <td>Pospuesto</td>
+                    {% else %}
+                    <td>{{ row.score }}</td>
+                    {% endif %}
+                    <!-- <td>
+                        <img src={{ row.awayTeam_logo }} alt="Lamp" width="32" height="32">
+                    </td> -->
+                    <td>{{ row.awayTeam }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <table>
+            <p>Tabla</p>
+            <thead>
+                <tr>
+                    <th>Temporada</th>
+                    <th>Posición</th>
+                    <th></th>
+                    <th>Equipo</th>
+                    <th>Puntos</th>
+                    <th>PJ</th>
+                    <th>PG</th>
+                    <th>PE</th>
+                    <th>PP</th>
+                    <th>GA</th>
+                    <th>GC</th>
+                    <th>DG</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for row in table %}
+                <tr>
+                    <td>{{ row.season }}</td>
+                    <td>{{ row.standing }}</td>
+                    <td>
+                        <img src={{ row.teamlogo }} alt="Lamp" width="32" height="32">
+                    </td>
+                    <td>{{ row.team }}</td>
+                    <td>{{ row.points }}</td>
+                    <td>{{ row.PG }}</td>
+                    <td>{{ row.Wons }}</td>
+                    <td>{{ row.Draws }}</td>
+                    <td>{{ row.Loses }}</td>
+                    <td>{{ row.goals }}</td>
+                    <td>{{ row.goals_against }}</td>
+                    <td>{{ row.goals_diff }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

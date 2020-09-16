@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div>
+        <table>
+            <tr valign="top">
+                <td><img src="{{ user.avatar(128) }}"></td>
+                <td>
+                    <h1>Usuario: {{ user.username }}</h1>
+                    {% if user.fav_squad %}
+                        <p>Equipo: <b>{{ user.fav_squad }}</b>
+                        <img src={{ logo }} width="32" height="32">
+                        </p>
+                    {% endif %}
+                    {% if user.last_seen %}
+                        <p>Última conexión: {{ moment(user.last_seen).format('LLL') }}</p>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <h3>Ranking de usuarios</h3>
+        {% for rank, row in ranking %}
+        <table>
+            <tr>
+                <td>Ranking</td>
+                <td>Nombre</td>
+                <td>Puntos</td>
+            </tr>
+            <tr>
+                <td>{{ rank + 1 }}</td>
+                <td>{{ row.nombre }}</td>
+                <td><b>{{row.puntos }}</b></td>
+            </tr>
+        </table>
+    </div>
+    
+    {% endfor %}
+
+{% endblock %}
