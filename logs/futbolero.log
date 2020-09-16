@@ -1,4 +1,4 @@
-2020-09-16 16:27:41,697 ERROR: Exception on / [GET] [in /home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py:1891]
+2020-09-16 20:48:17,319 ERROR: Exception on /user/mauri [GET] [in /home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py:1891]
 Traceback (most recent call last):
   File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
     response = self.full_dispatch_request()
@@ -14,22 +14,7 @@ Traceback (most recent call last):
     return self.view_functions[rule.endpoint](**req.view_args)
   File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask_login/utils.py", line 272, in decorated_view
     return func(*args, **kwargs)
-  File "/home/guido/Dropbox/cs50x/psets_cs50/final_project/app/routes.py", line 24, in index
-    return render_template("index.html", title='Home Page', table=tabla, fixture=fixture)
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/templating.py", line 137, in render_template
-    return _render(
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/templating.py", line 120, in _render
-    rv = template.render(context)
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/environment.py", line 1090, in render
-    self.environment.handle_exception()
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/environment.py", line 832, in handle_exception
-    reraise(*rewrite_traceback_stack(source=source))
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/_compat.py", line 28, in reraise
-    raise value.with_traceback(tb)
-  File "/home/guido/Dropbox/cs50x/psets_cs50/final_project/app/templates/index.html", line 2, in top-level template code
-    {% extends "base.html" %}
-  File "/home/guido/Dropbox/cs50x/psets_cs50/final_project/app/templates/base.html", line 43, in top-level template code
-    {% block content %}{% endblock %}
-  File "/home/guido/Dropbox/cs50x/psets_cs50/final_project/app/templates/index.html", line 22, in block "content"
-    {% for row in fixture %}
-TypeError: 'NoneType' object is not iterable
+  File "/home/guido/Dropbox/cs50x/final_project/app/routes.py", line 115, in user
+    logo=api_connection.logo('PL',user.fav_squad),
+AttributeError: module 'app.api_connection' has no attribute 'logo'
+2020-09-16 20:48:47,637 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:37]

@@ -41,22 +41,16 @@ def fixture(league, season, match_round):
     try:
         query = response.json()
         matches = []
-        print(query['matches'])
         for match in query['matches']:
             matches.append({'season':f'{season}-{str(int(season)+1)}',
             'round':match_round,
             'date': str(match["utcDate"][0:10]),
             'homeTeam': match['homeTeam']['name'],
-            'homeTeam_logo': logo(league, match['homeTeam']['name']),
             'awayTeam': match['awayTeam']['name'],
-            'awayTeam_logo': logo(league, match['awayTeam']['name']),
             'score': [match['score']['fullTime']['homeTeam'],match['score']['fullTime']['awayTeam']]})
         return matches
     except (KeyError, TypeError, ValueError):
         return None
-
-# print(datetime.utcnow().strftime('%Y'))
-print(fixture('PL',datetime.utcnow().strftime('%Y'),'1'),'\n\n\n\n\n')
 
 def standings(league, season):
     try:
@@ -69,6 +63,7 @@ def standings(league, season):
     try:
         query = response.json()
         standings = []
+        logos = []
         for standing in query['standings'][0]['table']:
             standings.append({'season':f'{season}-{str(int(season)+1)}',
                     'standing': standing['position'],
@@ -82,12 +77,10 @@ def standings(league, season):
                     'goals': standing["goalsFor"],
                     'goals_against': standing["goalsAgainst"],
                     'goals_diff': standing["goalDifference"]})
-        return standings
+            logos.append({'team': standing['team']['name'],'teamlogo': standing['team']["crestUrl"]})
+        return standings, logos
     except (KeyError, TypeError, ValueError):
         return None
-
-# print(pd.DataFrame(standings('PL',datetime.utcnow().strftime('%Y'))))
-print(standings('PL',datetime.utcnow().strftime('%Y')))
 
 def team(league):
 

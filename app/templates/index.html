@@ -12,9 +12,9 @@
                     <th>Fase</th>
                     <th>Fecha</th>
                     <th>Local</th>
-                    <!-- <th></th> -->
+                    <th></th>
                     <th>Resultado</th>
-                    <!-- <th></th> -->
+                    <th></th>
                     <th>Visitante</th>
                 </tr>
             </thead>
@@ -24,18 +24,18 @@
                     <td>{{ row.season }}</td>
                     <td>{{ row.round }}</td>
                     <td>{{ row.date }}</td>
-                    <td>{{ row.homeTeam }}</td>
-                    <!-- <td>
-                        <img src={{ row.homeTeam_logo }} alt="Lamp" width="32" height="32">
-                    </td> -->
+                    <td align="right">{{ row.homeTeam }}</td>
+                    <td>
+                        <img src={{ row.homelogo }} alt="Lamp" width="32" height="32">
+                    </td>
                     {% if row.score[0] == None %}
-                    <td>Pospuesto</td>
+                    <td align="center">Pospuesto</td>
                     {% else %}
-                    <td>{{ row.score }}</td>
+                    <td align="center">{{ row.score }}</td>
                     {% endif %}
-                    <!-- <td>
-                        <img src={{ row.awayTeam_logo }} alt="Lamp" width="32" height="32">
-                    </td> -->
+                    <td>
+                        <img src={{ row.awaylogo }} alt="Lamp" width="32" height="32">
+                    </td>
                     <td>{{ row.awayTeam }}</td>
                 </tr>
             {% endfor %}

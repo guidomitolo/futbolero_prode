@@ -21,7 +21,16 @@ from datetime import datetime
 def index():
     fixture = api_connection.fixture('PL',datetime.utcnow().strftime('%Y'),'1')
     tabla = api_connection.standings('PL',datetime.utcnow().strftime('%Y'))
-    return render_template("index.html", title='Home Page', table=tabla, fixture=fixture)
+
+    # add logo for each team in fixture
+    for team in fixture:
+        for logo in tabla[1]:
+            if team['homeTeam'] == logo['team']:
+                team['homelogo'] = logo['teamlogo']
+            if team['awayTeam'] == logo['team']:
+                team['awaylogo'] = logo['teamlogo']
+    
+    return render_template("index.html", title='Home Page', table=tabla[0], fixture=fixture)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
