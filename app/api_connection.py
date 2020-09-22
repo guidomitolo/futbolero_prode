@@ -3,10 +3,10 @@ import os
 import pandas as pd
 from datetime import datetime
 
-# export API_KEY=X-Auth-Token:e72e6080e092489abd8342d58b9b170e
-# api_key = os.environ.get("API_KEY")
+api_key = os.environ.get("API_KEY")
+api_header = os.environ.get("API_HEADER")
 
-headers = { 'X-Auth-Token': 'e72e6080e092489abd8342d58b9b170e' }
+headers = { api_header: api_key }
 
 def logo(league, team):
 
@@ -27,11 +27,14 @@ def logo(league, team):
     except (KeyError, TypeError, ValueError):
         return None
 
-def fixture(league, season, match_round):
+def fixture(league, season, match_round=None):
 
     # Contact API
     try:
-        URL = f"https://api.football-data.org/v2/competitions/{league}/matches?season={season}&matchday={match_round}"
+        if match_round == None:
+            URL = f"https://api.football-data.org/v2/competitions/{league}/matches?season={season}"
+        else:
+            URL = f"https://api.football-data.org/v2/competitions/{league}/matches?season={season}&matchday={match_round}"
         response = requests.get(url = URL, headers = headers) 
         response.raise_for_status()
     except requests.RequestException:
@@ -43,7 +46,7 @@ def fixture(league, season, match_round):
         matches = []
         for match in query['matches']:
             matches.append({'season':f'{season}-{str(int(season)+1)}',
-            'round':match_round,
+            'round':match['matchday'],
             'date': str(match["utcDate"][0:10]),
             'homeTeam': match['homeTeam']['name'],
             'awayTeam': match['awayTeam']['name'],
@@ -101,3 +104,10 @@ def team(league):
         return teams
     except (KeyError, TypeError, ValueError):
         return None
+
+# f = fixture('PL',datetime.utcnow().strftime('%Y'))
+# dates = []
+# for date in range(30):
+#     dates.append((f[date]))
+
+# print(dates)
