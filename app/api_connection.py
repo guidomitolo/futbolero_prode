@@ -27,14 +27,13 @@ def logo(league, team):
     except (KeyError, TypeError, ValueError):
         return None
 
-def fixture(league, season, match_round=None):
+
+# get all rounds and then cut
+def fixture(league, season):
 
     # Contact API
     try:
-        if match_round == None:
-            URL = f"https://api.football-data.org/v2/competitions/{league}/matches?season={season}"
-        else:
-            URL = f"https://api.football-data.org/v2/competitions/{league}/matches?season={season}&matchday={match_round}"
+        URL = f"https://api.football-data.org/v2/competitions/{league}/matches?season={season}"
         response = requests.get(url = URL, headers = headers) 
         response.raise_for_status()
     except requests.RequestException:
@@ -47,7 +46,7 @@ def fixture(league, season, match_round=None):
         for match in query['matches']:
             matches.append({'season':f'{season}-{str(int(season)+1)}',
             'round':match['matchday'],
-            'date': str(match["utcDate"][0:10]),
+            'date': datetime.strptime(match['utcDate'][0:10], '%Y-%m-%d').strftime('%d-%m-%Y'),
             'homeTeam': match['homeTeam']['name'],
             'awayTeam': match['awayTeam']['name'],
             'score': [match['score']['fullTime']['homeTeam'],match['score']['fullTime']['awayTeam']]})
@@ -104,10 +103,3 @@ def team(league):
         return teams
     except (KeyError, TypeError, ValueError):
         return None
-
-# f = fixture('PL',datetime.utcnow().strftime('%Y'))
-# dates = []
-# for date in range(30):
-#     dates.append((f[date]))
-
-# print(dates)

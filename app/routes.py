@@ -18,10 +18,18 @@ from datetime import datetime
 # adding a query string argument to the URL, making the complete redirect URL /login?next=/index.
 # The next query string argument is set to the original URL, so the application can use 
 # that to redirect back after login.
+
 def index():
-    fixture = api_connection.fixture('PL',datetime.utcnow().strftime('%Y'),'1')
+
+    # api requests
+    fixture = api_connection.fixture('PL',datetime.utcnow().strftime('%Y'))
     tabla = api_connection.standings('PL',datetime.utcnow().strftime('%Y'))
 
+    # get current round
+    rounds = [matches['round'] for matches in fixture if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
+    # get matches of current round
+    current_round = [matches for matches in fixture if matches['round'] == max(rounds)]
+    
     # add logo for each team in fixture
     for team in fixture:
         for logo in tabla[1]:
@@ -30,7 +38,7 @@ def index():
             if team['awayTeam'] == logo['team']:
                 team['awaylogo'] = logo['teamlogo']
     
-    return render_template("index.html", title='Home Page', table=tabla[0], fixture=fixture)
+    return render_template("index.html", title='Home Page', table=tabla[0], fixture=current_round)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -147,5 +155,12 @@ def edit_profile():
 # The next query string argument is set to the original URL, so the application can use 
 # that to redirect back after login.
 def bet():
-    fixture = api_connection.fixture('PL','2019','1')
-    return render_template("bet.html", title='Home Page', fixture=fixture)
+    # api request
+    fixture = api_connection.fixture('PL',datetime.utcnow().strftime('%Y'))
+
+    # get current round
+    rounds = [matches['round'] for matches in fixture if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
+    # get matches of next round
+    next_round = [matches for matches in fixture if matches['round'] == max(rounds) + 1]
+
+    return render_template("bet.html", title='Home Page', fixture=next_round)
