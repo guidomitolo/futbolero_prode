@@ -55,3 +55,8 @@ class EditProfileForm(FlaskForm):
             user = User.query.filter_by(username=self.username.data).first()
             if user is not None:
                 raise ValidationError('Please use a different username.')
+
+class GAmbling(FlaskForm):
+    bet = StringField('Username', validators=[DataRequired()])
+    fav_squad = SelectField('Fav\' Squad',choices=api_connection.team('PL'))
+    submit = SubmitField('Bet')
