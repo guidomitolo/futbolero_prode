@@ -4,7 +4,7 @@ from app.forms import LoginForm, RegistrationForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Points, Bets
 from app import db
-from app.forms import RegistrationForm, EditProfileForm
+from app.forms import RegistrationForm, EditProfileForm, GamblingForm
 
 from flask import request
 from werkzeug.urls import url_parse
@@ -104,6 +104,7 @@ def register():
         db.session.commit()
     
         user.set_password(form.password.data)
+
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
@@ -148,7 +149,7 @@ def edit_profile():
         form.fav_squad.data = current_user.fav_squad
     return render_template('edit_profile.html', title='Edit Profile', form=form)
 
-@app.route('/bet')
+@app.route('/bet', methods=['GET', 'POST'])
 @login_required
 # the @login_required decorator intercepts the request and responds with a redirect to /login, 
 # adding a query string argument to the URL, making the complete redirect URL /login?next=/index.
@@ -157,10 +158,54 @@ def edit_profile():
 def bet():
     # api request
     fixture = api_connection.fixture('PL',datetime.utcnow().strftime('%Y'))
-
     # get current round
     rounds = [matches['round'] for matches in fixture if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
     # get matches of next round
     next_round = [matches for matches in fixture if matches['round'] == max(rounds) + 1]
 
-    return render_template("bet.html", title='Home Page', fixture=next_round)
+    # close the bets if the first date of the coming round
+    if datetime.utcnow().date() == datetime.strptime(next_round[0]['date'], '%d-%m-%Y').date():
+        form = False
+    else:
+        # bet fields
+        form = GamblingForm()
+
+
+        # deberia mostrar la ultima apuesta para no volver a apostar de cero
+        if form.validate_on_submit():
+            # first check if the bet is already done to overwrite the scores
+            for value, match in zip(form.bet.data, next_round):
+                print(match['matchID'], value)
+                # all the bets by the user
+                bet_matches = Bets.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
+                bet_list = [int(str(bet)) for bet in bet_matches]
+                # check if the user has not place any bet and add a new user and a new bet
+                if len(bet_matches) == 0:
+                    new_user_bets = Bets(user_id=User.query.filter_by(username=current_user.username).first().id,
+                        match_id=match['matchID'],
+                        timestamp = datetime.utcnow(),
+                        score_home = value['home'],
+                        score_away = value['away'])
+                    db.session.add(new_user_bets)
+                    db.session.commit()
+                # check if the already existing user has already place a bet in the db matches
+                else:
+                    if match['matchID'] in bet_list:
+                        for bet in bet_matches:
+                            if int(str(bet.match_id)) == match['matchID']:
+                                bet.timestamp = datetime.utcnow()
+                                bet.score_home = value['home']
+                                bet.score_away = value['away']
+                                db.session.commit()
+                    else:
+                        new_bet = Bets(user_id=User.query.filter_by(username=current_user.username).first().id,
+                        match_id=match['matchID'],
+                        timestamp = datetime.utcnow(),
+                        score_home = value['home'],
+                        score_away = value['away'])
+                        db.session.add(new_bet)
+                        db.session.commit()
+
+            flash('Has enviado una apuesta')
+
+    return render_template("bet.html", title='Home Page', table=next_round, form=form)

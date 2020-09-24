@@ -51,12 +51,12 @@ class Bets(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    result = db.Column(db.String(140))
+    match_id = db.Column(db.Integer)
     score_home = db.Column(db.String(140))
     score_away = db.Column(db.String(140))
 
     def __repr__(self):
-        return '<Bets {}>'.format(self.result)
+        return '{}'.format(self.match_id)
 
 @login.user_loader
 def load_user(id):

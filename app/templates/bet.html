@@ -12,22 +12,52 @@
                     <th>Fase</th>
                     <th>Fecha</th>
                     <th>Local</th>
-                    <th>Resultado</th>
+                    <th>Resultado Local</th>
+                    <th>Resultado Visitante</th>
                     <th>Visitante</th>
                 </tr>
             </thead>
             <tbody>
-            {% for row in fixture %}
-                <tr>
-                    <td>{{ row.season }}</td>
-                    <td>{{ row.round }}</td>
-                    <td>{{ row.date }}</td>
-                    <td>{{ row.homeTeam }}</td>
-                    <td>{{ row.score }}</td>
-                    <td>{{ row.awayTeam }}</td>
-                </tr>
-            {% endfor %}
+                <form method="POST" action="" novalidate>
+                {% if form != False %}
+                    {{ form.hidden_tag() }}
+                {% endif %}
+
+                {% for row in range(10) %}
+                    <tr>
+                        <td>{{ table[row].season }}</td>
+                        <td>{{ table[row].round }}</td>
+                        <td>{{ table[row].date }}</td>
+                        <td>{{ table[row].homeTeam }}</td>
+
+                        {% if form != False %}
+                            <td>{{ form.bet[row].home }}</td>
+                            <td>{{ form.bet[row].away }}</td>
+                        {% else %}
+                            <td>Cerrado</td>
+                            <td>Cerrado</td>
+                        {% endif %}
+
+                        <td>{{ table[row].awayTeam }}</td>
+                    </tr>
+                {% endfor %}
+
+                {% if form != False %}
+                    <tr>
+                        <td><button>Bet</button></td>
+                        {% if form.bet.errors is defined %}
+                            <div><span style="color: red; position: absolute;">{{ form.bet.errors[-1] }}</span></div>
+                        {% endif %}
+                    </tr>
+                {% else %}
+                    <td>Las apuestas ya se han cerrado</td>
+                {% endif %}
+
+                </form>
             </tbody>
         </table>
+        <div>
+
+        </div>
     </div>
 {% endblock %}

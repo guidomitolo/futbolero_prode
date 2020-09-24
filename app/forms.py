@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
+from wtforms import FormField, FieldList, IntegerField, Form
+from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length, NumberRange, InputRequired
 from app.models import User
 from app import api_connection
 
@@ -42,6 +43,7 @@ class EditProfileForm(FlaskForm):
     fav_squad = SelectField('Fav\' Squad',choices=api_connection.team('PL'))
     submit = SubmitField('Submit')
 
+    # constructor to check if the user is logged
     def __init__(self, original_username, *args, **kwargs):
         super(EditProfileForm, self).__init__(*args, **kwargs)
         self.original_username = original_username
@@ -56,7 +58,14 @@ class EditProfileForm(FlaskForm):
             if user is not None:
                 raise ValidationError('Please use a different username.')
 
-class GAmbling(FlaskForm):
-    bet = StringField('Username', validators=[DataRequired()])
-    fav_squad = SelectField('Fav\' Squad',choices=api_connection.team('PL'))
-    submit = SubmitField('Bet')
+class BetForm(Form):
+    home = IntegerField()
+    away = IntegerField()
+
+class GamblingForm(FlaskForm):
+    bet = FieldList(FormField(BetForm), min_entries=10, max_entries=10)
+    
+    def validate_bet(form, bet):
+        for field in bet.data:
+            if field['home'] == None or field['away'] == None:
+                raise ValidationError('Completar los campos numéricos')

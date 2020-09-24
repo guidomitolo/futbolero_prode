@@ -47,7 +47,10 @@ def fixture(league, season):
             matches.append({'season':f'{season}-{str(int(season)+1)}',
             'round':match['matchday'],
             'date': datetime.strptime(match['utcDate'][0:10], '%Y-%m-%d').strftime('%d-%m-%Y'),
+            'matchID': match['id'],
+            'homeTeamID': match['homeTeam']['id'],
             'homeTeam': match['homeTeam']['name'],
+            'awayTeamID': match['awayTeam']['id'],
             'awayTeam': match['awayTeam']['name'],
             'score': [match['score']['fullTime']['homeTeam'],match['score']['fullTime']['awayTeam']]})
         return matches
@@ -103,3 +106,5 @@ def team(league):
         return teams
     except (KeyError, TypeError, ValueError):
         return None
+
+# print(fixture('PL','2020')[0])
