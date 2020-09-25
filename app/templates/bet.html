@@ -31,8 +31,8 @@
                         <td>{{ table[row].homeTeam }}</td>
 
                         {% if form != False %}
-                            <td>{{ form.bet[row].home }}</td>
-                            <td>{{ form.bet[row].away }}</td>
+                            <td>{{ form.bet[row].home(value=value[row].home) }}</td>
+                            <td>{{ form.bet[row].away(value=value[row].away) }}</td>
                         {% else %}
                             <td>Cerrado</td>
                             <td>Cerrado</td>

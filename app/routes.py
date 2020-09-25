@@ -163,6 +163,27 @@ def bet():
     # get matches of next round
     next_round = [matches for matches in fixture if matches['round'] == max(rounds) + 1]
 
+    # access to Bets db
+    bet_matches = Bets.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
+    # make list of matches in bets
+    bet_list = [int(str(bet)) for bet in bet_matches]
+
+    score_list = []
+    # if one matchID exists, the rest matches of the same round exist
+    for match in next_round:
+        if match['matchID'] in bet_list:
+            for bet in bet_matches:
+                if int(str(bet.match_id)) == match['matchID']:
+                    score_list.append({'home':int(str(bet.score_home)),'away':int(str(bet.score_home))})
+
+# mejorar con un false para que quede realmente vacio y cuidado con el reload despues del BET
+    if not score_list:
+        print('if',score_list)
+        last = [{'home':'', 'away':''} for x in range(10)]
+    else:
+        print('else',score_list)
+        last = score_list
+
     # close the bets if the first date of the coming round
     if datetime.utcnow().date() == datetime.strptime(next_round[0]['date'], '%d-%m-%Y').date():
         form = False
@@ -170,15 +191,15 @@ def bet():
         # bet fields
         form = GamblingForm()
 
-
-        # deberia mostrar la ultima apuesta para no volver a apostar de cero
         if form.validate_on_submit():
+
             # first check if the bet is already done to overwrite the scores
             for value, match in zip(form.bet.data, next_round):
-                print(match['matchID'], value)
-                # all the bets by the user
-                bet_matches = Bets.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
-                bet_list = [int(str(bet)) for bet in bet_matches]
+
+                # all the bets by the user and make list
+                # bet_matches = Bets.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
+                # bet_list = [int(str(bet)) for bet in bet_matches]
+
                 # check if the user has not place any bet and add a new user and a new bet
                 if len(bet_matches) == 0:
                     new_user_bets = Bets(user_id=User.query.filter_by(username=current_user.username).first().id,
@@ -208,4 +229,4 @@ def bet():
 
             flash('Has enviado una apuesta')
 
-    return render_template("bet.html", title='Home Page', table=next_round, form=form)
+    return render_template("bet.html", title='Home Page', table=next_round, form=form, value=last)

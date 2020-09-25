@@ -1,6 +1,9 @@
-from app import db
-from app.models import User, Bets
+# from app import db
+# from app.models import User, Bets
 
 
-user = User.query.filter_by(username='guido').first().id
-print(user)
+# last = [{'home':'-', 'away':'-'} for x in range(10)]
+# print(last)
+
+lista = []
+print(not lista)

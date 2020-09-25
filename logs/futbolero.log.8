@@ -1,4 +1,42 @@
-2020-09-23 19:08:49,463 ERROR: Exception on /bet [GET] [in /home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py:1891]
+2020-09-23 19:31:25,801 ERROR: Exception on /bet [GET] [in /home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py:1891]
+Traceback (most recent call last):
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask_login/utils.py", line 272, in decorated_view
+    return func(*args, **kwargs)
+  File "/home/guido/Dropbox/cs50x/final_project/app/routes.py", line 175, in bet
+    return render_template("bet.html", title='Home Page', table=next_round, form=form)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/templating.py", line 137, in render_template
+    return _render(
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/templating.py", line 120, in _render
+    rv = template.render(context)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/environment.py", line 1090, in render
+    self.environment.handle_exception()
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/environment.py", line 832, in handle_exception
+    reraise(*rewrite_traceback_stack(source=source))
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/_compat.py", line 28, in reraise
+    raise value.with_traceback(tb)
+  File "/home/guido/Dropbox/cs50x/final_project/app/templates/bet.html", line 2, in top-level template code
+    {% extends "base.html" %}
+  File "/home/guido/Dropbox/cs50x/final_project/app/templates/base.html", line 43, in top-level template code
+    {% block content %}{% endblock %}
+  File "/home/guido/Dropbox/cs50x/final_project/app/templates/bet.html", line 36, in block "content"
+    <td>{{ form[row].home }}</td>
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/environment.py", line 471, in getattr
+    return getattr(obj, attribute)
+jinja2.exceptions.UndefinedError: app.forms.GamblingForm object has no element 0
+2020-09-23 19:31:43,863 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:37]
+2020-09-23 19:32:10,990 ERROR: Exception on /bet [GET] [in /home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py:1891]
 Traceback (most recent call last):
   File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
     response = self.full_dispatch_request()
@@ -33,10 +71,11 @@ Traceback (most recent call last):
   File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/_compat.py", line 28, in reraise
     raise value.with_traceback(tb)
   File "/home/guido/Dropbox/cs50x/final_project/app/templates/bet.html", line 22, in template
-    {% if form is type(object) %}
-jinja2.exceptions.TemplateAssertionError: no test named 'type'
-2020-09-23 19:16:03,540 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:37]
-2020-09-23 19:16:14,586 ERROR: Exception on /bet [GET] [in /home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py:1891]
+    {% if form is not define %}
+jinja2.exceptions.TemplateAssertionError: no test named 'define'
+2020-09-24 10:37:51,486 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:37]
+2020-09-24 10:40:14,558 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:37]
+2020-09-24 10:40:25,929 ERROR: Exception on /bet [GET] [in /home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py:1891]
 Traceback (most recent call last):
   File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
     response = self.full_dispatch_request()
@@ -68,47 +107,7 @@ Traceback (most recent call last):
     {% extends "base.html" %}
   File "/home/guido/Dropbox/cs50x/final_project/app/templates/base.html", line 43, in top-level template code
     {% block content %}{% endblock %}
-  File "/home/guido/Dropbox/cs50x/final_project/app/templates/bet.html", line 31, in block "content"
-    {% if form[row].away != 'Cerrado' %}
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/environment.py", line 471, in getattr
-    return getattr(obj, attribute)
-jinja2.exceptions.UndefinedError: app.forms.GamblingForm object has no element 0
-2020-09-23 19:18:48,432 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:37]
-2020-09-23 19:19:21,055 ERROR: Exception on /bet [GET] [in /home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py:1891]
-Traceback (most recent call last):
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
-    response = self.full_dispatch_request()
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1821, in handle_user_exception
-    reraise(exc_type, exc_value, tb)
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/_compat.py", line 39, in reraise
-    raise value
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
-    return self.view_functions[rule.endpoint](**req.view_args)
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask_login/utils.py", line 272, in decorated_view
-    return func(*args, **kwargs)
-  File "/home/guido/Dropbox/cs50x/final_project/app/routes.py", line 175, in bet
-    return render_template("bet.html", title='Home Page', table=next_round, form=form)
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/templating.py", line 137, in render_template
-    return _render(
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/templating.py", line 120, in _render
-    rv = template.render(context)
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/environment.py", line 1090, in render
-    self.environment.handle_exception()
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/environment.py", line 832, in handle_exception
-    reraise(*rewrite_traceback_stack(source=source))
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/_compat.py", line 28, in reraise
-    raise value.with_traceback(tb)
-  File "/home/guido/Dropbox/cs50x/final_project/app/templates/bet.html", line 2, in top-level template code
-    {% extends "base.html" %}
-  File "/home/guido/Dropbox/cs50x/final_project/app/templates/base.html", line 43, in top-level template code
-    {% block content %}{% endblock %}
-  File "/home/guido/Dropbox/cs50x/final_project/app/templates/bet.html", line 31, in block "content"
-    {% if form[row].away != 'Cerrado' %}
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/environment.py", line 471, in getattr
-    return getattr(obj, attribute)
-jinja2.exceptions.UndefinedError: app.forms.GamblingForm object has no element 0
-2020-09-23 19:20:06,577 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:37]
+  File "/home/guido/Dropbox/cs50x/final_project/app/templates/bet.html", line 25, in block "content"
+    {{ form.hidden_tag() }}
+jinja2.exceptions.UndefinedError: 'list object' has no attribute 'hidden_tag'
+2020-09-24 10:41:04,734 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:37]
