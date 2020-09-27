@@ -109,7 +109,6 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
-
 @app.route('/user/<username>')
 @login_required
 def user(username):
@@ -133,7 +132,6 @@ def before_request():
         # which will run a database query that will put the target user in the database session
         db.session.commit()
 
-
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
@@ -156,50 +154,41 @@ def edit_profile():
 # The next query string argument is set to the original URL, so the application can use 
 # that to redirect back after login.
 def bet():
-    # api request
+    # api request for matches/fixture
     fixture = api_connection.fixture('PL',datetime.utcnow().strftime('%Y'))
     # get current round
     rounds = [matches['round'] for matches in fixture if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
     # get matches of next round
     next_round = [matches for matches in fixture if matches['round'] == max(rounds) + 1]
 
-    # access to Bets db
+    # access to Bets database
     bet_matches = Bets.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
     # make list of matches in bets
     bet_list = [int(str(bet)) for bet in bet_matches]
-
+    # if one matchID exists, all other matches of the same round exist as well. 
+    # then, make a list to pass as value of each form
     score_list = []
-    # if one matchID exists, the rest matches of the same round exist
     for match in next_round:
         if match['matchID'] in bet_list:
             for bet in bet_matches:
                 if int(str(bet.match_id)) == match['matchID']:
                     score_list.append({'home':int(str(bet.score_home)),'away':int(str(bet.score_home))})
 
-# mejorar con un false para que quede realmente vacio y cuidado con el reload despues del BET
     if not score_list:
-        print('if',score_list)
-        last = [{'home':'', 'away':''} for x in range(10)]
+        last = False
     else:
-        print('else',score_list)
         last = score_list
 
-    # close the bets if the first date of the coming round
+    # close the bets if access to the bet form is equal to the first date of the coming round
     if datetime.utcnow().date() == datetime.strptime(next_round[0]['date'], '%d-%m-%Y').date():
         form = False
     else:
-        # bet fields
+        # get bet fields
         form = GamblingForm()
 
         if form.validate_on_submit():
-
             # first check if the bet is already done to overwrite the scores
             for value, match in zip(form.bet.data, next_round):
-
-                # all the bets by the user and make list
-                # bet_matches = Bets.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
-                # bet_list = [int(str(bet)) for bet in bet_matches]
-
                 # check if the user has not place any bet and add a new user and a new bet
                 if len(bet_matches) == 0:
                     new_user_bets = Bets(user_id=User.query.filter_by(username=current_user.username).first().id,
@@ -209,7 +198,7 @@ def bet():
                         score_away = value['away'])
                     db.session.add(new_user_bets)
                     db.session.commit()
-                # check if the already existing user has already place a bet in the db matches
+                # check if the already existing user has already place a bet in the database
                 else:
                     if match['matchID'] in bet_list:
                         for bet in bet_matches:
