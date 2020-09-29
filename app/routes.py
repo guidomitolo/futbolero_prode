@@ -25,7 +25,7 @@ def index():
     fixture = api_connection.fixture('PL',datetime.utcnow().strftime('%Y'))
     tabla = api_connection.standings('PL',datetime.utcnow().strftime('%Y'))
 
-    # get current round
+    # get all rounds until now
     rounds = [matches['round'] for matches in fixture if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
     # get matches of current round
     current_round = [matches for matches in fixture if matches['round'] == max(rounds)]
@@ -159,7 +159,9 @@ def bet():
     # get current round
     rounds = [matches['round'] for matches in fixture if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
     # get matches of next round
-    next_round = [matches for matches in fixture if matches['round'] == max(rounds) + 1]
+
+    ####### OJO OJO OJO OJO
+    next_round = [matches for matches in fixture if matches['round'] == max(rounds) -1]
 
     # access to Bets database
     bet_matches = Bets.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
@@ -219,3 +221,76 @@ def bet():
             flash('Has enviado una apuesta')
 
     return render_template("bet.html", title='Home Page', table=next_round, form=form, value=last)
+
+@app.route('/results', methods=['GET', 'POST'])
+@login_required
+def results():
+
+    fixture = api_connection.fixture('PL',datetime.utcnow().strftime('%Y'))
+
+    bet_matches = Bets.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
+
+    points_db = Points.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
+
+    points_recorded = [score.match_id for score in points_db]
+
+    def score(bet_home, score_home, bet_away, score_away):
+        if bet_home == score_home and bet_away == score_away:
+            return 6
+        elif bet_home > bet_away and score_home > score_away:
+            return 3
+        elif bet_home < bet_away and score_home < score_away:
+            return 3
+        elif bet_home == bet_away and score_home == score_away:
+            return 3
+        else:
+            return 0
+
+    # evaluate new bets
+    for match in fixture:
+        for bet in bet_matches:
+            # primero chequear q se hizo la apuesta
+            # segundo chequear si la apuesta no fue evaluada previamente
+            if int(str(bet.match_id)) == match['matchID'] and match['matchID'] not in points_recorded:
+
+                # chequear q se haya jugado el partido al que se apostó
+                # si no se jugó, queda la evaluación pediente (pass)
+                if match['score'][0] != None:
+
+                    points_match = Points(user_id=User.query.filter_by(username=current_user.username).first().id, 
+                    match_id=match['matchID'],
+                    points= score(int(str(bet.score_home)), match['score'][0], int(str(bet.score_away)), match['score'][1]))
+                    db.session.add(points_match)
+                    db.session.commit()
+
+    rounds = [matches['round'] for matches in fixture if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
+    last_round = [matches for matches in fixture if matches['round'] == max(rounds) - 1]
+
+    points = []
+
+    print(points_recorded)
+
+    # show last points
+    for match in last_round:
+        for score in points_db:
+            for bet in bet_matches:
+                if match['matchID'] == int(str(score.match_id)) and match['matchID'] == int(str(bet.match_id)):
+                    match['bet_local'] = bet.score_home
+                    match['bet_away'] = bet.score_away
+                    # si hay resultado
+                    if match['score'][0] != None:
+                        match['points'] = score.points
+                        points.append(score.points)
+                    # si no hay resultado, completar con None
+                    else:
+                        match['points'] = None
+                        points.append(None)
+
+    # if there are not any bets
+    print(points_recorded)
+    if not points_recorded or points_recorded[0] == None:
+        total = False
+    else:
+        total = sum([num for num in points if isinstance(num,int)])
+
+    return render_template("results.html", title='Home Page', table=last_round, total=total)

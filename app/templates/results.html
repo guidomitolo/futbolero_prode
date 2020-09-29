@@ -1,0 +1,56 @@
+{% extends "base.html" %} 
+
+{% block content %}
+    <h1>Hi, {{ current_user.username }}!</h1>
+    <div>
+        {% if total is false%}
+            <p>No hay apuestas</p>
+        {% else %}
+            <table>
+                <p>Próxima fecha</p>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Local</th>
+                        <th>Resultado Local</th>
+                        <th>Apuesta Local</th>
+                        <th>Visitante</th>
+                        <th>Resultado Visitante</th>
+                        <th>Apuesta Visitante</th>
+                        <th>Puntos</th>
+                    </tr>
+                </thead>
+                <tbody>    
+                    {% for row in table %}
+                        <tr>
+                            <td>{{ row.date }}</td>
+                            <td align="right">{{ row.homeTeam }}</td>
+                            {% if row.score[0] == None %}
+                                <td align="center">Pendiente</td>
+                            {% else %}
+                                <td align="center">{{ row.score[0] }}</td>
+                            {% endif %}
+                            <td align="center">{{ row.bet_away }}</td>
+                            <td>{{ row.awayTeam }}</td>
+                            {% if row.score[1] == None %}
+                                <td align="center">Pendiente</td>
+                            {% else %}
+                                <td align="center">{{ row.score[1] }}</td>
+                            {% endif %}
+                            <td align="center">{{ row.bet_away }}</td>
+                            {% if row.score[0] == None %}
+                                <td>Sin Puntuar</td>
+                            {% else %}
+                                <td>{{ row.points }}</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td>TOTAL</td>
+                        <td><b></b>{{ total }}</b></td>
+                    </tr>
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+{% endblock %}

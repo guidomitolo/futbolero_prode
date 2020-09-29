@@ -44,14 +44,18 @@ class User(UserMixin, db.Model):
 class Points(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    match_id = db.Column(db.Integer)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     points = db.Column(db.Integer)
+
+    def __repr__(self):
+        return '{}'.format(self.match_id)
 
 class Bets(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    match_id = db.Column(db.Integer)
+    match_id = db.Column(db.Integer, nullable=False)
     score_home = db.Column(db.String(140))
     score_away = db.Column(db.String(140))
 

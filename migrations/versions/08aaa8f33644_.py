@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: e60652ae1948
+Revision ID: 08aaa8f33644
 Revises: 
-Create Date: 2020-09-16 11:30:51.927870
+Create Date: 2020-09-29 17:47:09.652594
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'e60652ae1948'
+revision = '08aaa8f33644'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -33,7 +33,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('timestamp', sa.DateTime(), nullable=True),
-    sa.Column('result', sa.String(length=140), nullable=True),
+    sa.Column('match_id', sa.Integer(), nullable=False),
     sa.Column('score_home', sa.String(length=140), nullable=True),
     sa.Column('score_away', sa.String(length=140), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
@@ -43,6 +43,7 @@ def upgrade():
     op.create_table('points',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('match_id', sa.Integer(), nullable=True),
     sa.Column('timestamp', sa.DateTime(), nullable=True),
     sa.Column('points', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
