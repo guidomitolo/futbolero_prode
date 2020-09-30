@@ -1,5 +1,5 @@
 from flask import render_template, flash, redirect, url_for
-from app import app, api_connection
+from app import app, helpers
 from app.forms import LoginForm, RegistrationForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Points, Bets
@@ -22,8 +22,8 @@ from datetime import datetime
 def index():
 
     # api requests
-    fixture = api_connection.fixture('PL',datetime.utcnow().strftime('%Y'))
-    tabla = api_connection.standings('PL',datetime.utcnow().strftime('%Y'))
+    fixture = helpers.fixture('PL',datetime.utcnow().strftime('%Y'))
+    tabla = helpers.standings('PL',datetime.utcnow().strftime('%Y'))
 
     # get all rounds until now
     rounds = [matches['round'] for matches in fixture if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
@@ -120,7 +120,7 @@ def user(username):
 
     return render_template('user.html',
                     user=user, 
-                    logo=api_connection.logo('PL',user.fav_squad),
+                    logo=helpers.logo('PL',user.fav_squad),
                     ranking=enumerate(ranking))
 
 # @before_request decorator from Flask register the decorated function to be executed right before the view function
@@ -155,7 +155,7 @@ def edit_profile():
 # that to redirect back after login.
 def bet():
     # api request for matches/fixture
-    fixture = api_connection.fixture('PL',datetime.utcnow().strftime('%Y'))
+    fixture = helpers.fixture('PL',datetime.utcnow().strftime('%Y'))
     # get current round
     rounds = [matches['round'] for matches in fixture if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
     # get matches of next round
@@ -226,71 +226,43 @@ def bet():
 @login_required
 def results():
 
-    fixture = api_connection.fixture('PL',datetime.utcnow().strftime('%Y'))
-
+    fixture = helpers.fixture('PL',datetime.utcnow().strftime('%Y'))
     bet_matches = Bets.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
 
-    points_db = Points.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
+    # evaluate bets of the played matchets
+    helpers.load(fixture, bet_matches, current_user.username)
 
-    points_recorded = [score.match_id for score in points_db]
-
-    def score(bet_home, score_home, bet_away, score_away):
-        if bet_home == score_home and bet_away == score_away:
-            return 6
-        elif bet_home > bet_away and score_home > score_away:
-            return 3
-        elif bet_home < bet_away and score_home < score_away:
-            return 3
-        elif bet_home == bet_away and score_home == score_away:
-            return 3
-        else:
-            return 0
-
-    # evaluate new bets
-    for match in fixture:
-        for bet in bet_matches:
-            # primero chequear q se hizo la apuesta
-            # segundo chequear si la apuesta no fue evaluada previamente
-            if int(str(bet.match_id)) == match['matchID'] and match['matchID'] not in points_recorded:
-
-                # chequear q se haya jugado el partido al que se apostó
-                # si no se jugó, queda la evaluación pediente (pass)
-                if match['score'][0] != None:
-
-                    points_match = Points(user_id=User.query.filter_by(username=current_user.username).first().id, 
-                    match_id=match['matchID'],
-                    points= score(int(str(bet.score_home)), match['score'][0], int(str(bet.score_away)), match['score'][1]))
-                    db.session.add(points_match)
-                    db.session.commit()
+    show_points = Points.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
 
     rounds = [matches['round'] for matches in fixture if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
+
     last_round = [matches for matches in fixture if matches['round'] == max(rounds) - 1]
 
     points = []
 
-    print(points_recorded)
-
-    # show last points
+    # add corresponding data in dictionary to show on template
     for match in last_round:
-        for score in points_db:
+        for score in show_points:
             for bet in bet_matches:
+                # add match
                 if match['matchID'] == int(str(score.match_id)) and match['matchID'] == int(str(bet.match_id)):
                     match['bet_local'] = bet.score_home
                     match['bet_away'] = bet.score_away
-                    # si hay resultado
+                    # add points
                     if match['score'][0] != None:
                         match['points'] = score.points
                         points.append(score.points)
-                    # si no hay resultado, completar con None
+                    # add none if the match was not played
                     else:
                         match['points'] = None
                         points.append(None)
 
-    # if there are not any bets
-    print(points_recorded)
-    if not points_recorded or points_recorded[0] == None:
+        # load all the data if it is not a new user who has bets
+    if not bet_matches:
         total = False
     else:
         total = sum([num for num in points if isinstance(num,int)])
+    print(points)
+    print(total)
 
     return render_template("results.html", title='Home Page', table=last_round, total=total)
