@@ -59,3 +59,11 @@ Traceback (most recent call last):
     ranking=enumerate(ranking))
 TypeError: 'bool' object is not iterable
 2020-09-30 15:39:03,468 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:37]
+2020-09-30 15:54:02,662 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:37]
+2020-09-30 15:57:54,625 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:37]
+2020-09-30 15:58:48,842 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:37]
+2020-09-30 15:59:13,222 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:37]
+2020-09-30 16:00:09,798 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:37]
+2020-09-30 16:02:56,163 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:37]
+2020-09-30 16:03:15,175 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:37]
+2020-09-30 16:03:54,832 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:37]

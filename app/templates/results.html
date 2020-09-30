@@ -3,8 +3,10 @@
 {% block content %}
     <h1>Hi, {{ current_user.username }}!</h1>
     <div>
-        {% if total is false%}
-            <p>No hay apuestas</p>
+        {% if total == 'closed' %}
+            <p>Fecha cerrada</p>
+        {% elif total == 'no_bets' %}
+            <p>No haya apuestas</p>
         {% else %}
             <table>
                 <p>Próxima fecha</p>

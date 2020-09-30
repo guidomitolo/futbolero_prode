@@ -247,34 +247,33 @@ def results():
 
     rounds = [matches['round'] for matches in fixture if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
 
-    last_round = [matches for matches in fixture if matches['round'] == max(rounds)]
+    # last_round = [matches for matches in fixture if matches['round'] == max(rounds)]
 
     points = []
 
-    # PROBLEMÓN: LA APUESTA HECHA PARA LA "PROXIMA FECHA" ES "PROCESADA" PARA LA PRESENTE
-    # ¿AGREGO UN "NO MATCHS YET"?
+    # get matches of next round
+    next_round = [matches for matches in fixture if matches['round'] == max(rounds) + 1]
 
-    # add corresponding data in dictionary to show on template
-    for match in last_round:
-        for score in show_points:
-            for bet in bet_matches:
-                # add match
-                if match['matchID'] == int(str(score.match_id)) and match['matchID'] == int(str(bet.match_id)):
-                    match['bet_local'] = bet.score_home
-                    match['bet_away'] = bet.score_away
-                    # add points
-                    if match['score'][0] != None:
-                        match['points'] = score.points
-                        points.append(score.points)
-                    # add none if the match was not played
-                    else:
-                        match['points'] = None
-                        points.append(None)
-
-        # load all the data if it is not a new user who has bets
     if not bet_matches:
-        total = False
-    else:
+        total = 'no_bets'
+    elif datetime.utcnow().date() == datetime.strptime(next_round[0]['date'], '%d-%m-%Y').date():
+        for match in next_round:
+            for score in show_points:
+                for bet in bet_matches:
+                    # add match
+                    if match['matchID'] == int(str(score.match_id)) and match['matchID'] == int(str(bet.match_id)):
+                        match['bet_local'] = bet.score_home
+                        match['bet_away'] = bet.score_away
+                        # add points
+                        if match['score'][0] != None:
+                            match['points'] = score.points
+                            points.append(score.points)
+                        # add none if the match was not played
+                        else:
+                            match['points'] = None
+                            points.append(None)
         total = sum([num for num in points if isinstance(num,int)])
+    else:
+        total = 'closed'
 
-    return render_template("results.html", title='Home Page', table=last_round, total=total)
+    return render_template("results.html", title='Home Page', table=next_round, total=total)
