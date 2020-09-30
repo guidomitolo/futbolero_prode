@@ -14,14 +14,9 @@ from datetime import datetime
 @app.route('/')
 @app.route('/index')
 @login_required
-# the @login_required decorator intercepts the request and responds with a redirect to /login, 
-# adding a query string argument to the URL, making the complete redirect URL /login?next=/index.
-# The next query string argument is set to the original URL, so the application can use 
-# that to redirect back after login.
-
 def index():
     
-    # # call API once, each time in index
+    # # call API once, each time index is rendered
     global fixture
     fixture = helpers.fixture('PL',datetime.utcnow().strftime('%Y'))
 
@@ -36,10 +31,8 @@ def index():
             if team['awayTeam'] == logo['team']:
                 team['awaylogo'] = logo['teamlogo']
 
-    # get all rounds until now
-    rounds = [matches['round'] for matches in fixture if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
     # get matches of current round
-    current_round = [matches for matches in fixture if matches['round'] == max(rounds)]
+    current_round = [matches for matches in fixture if matches['round'] == helpers.up_rounds(fixture)]
         
     return render_template("index.html", title='Home Page', table=tabla[0], fixture=current_round)
 
@@ -55,11 +48,6 @@ def login():
 
     # form object instantiated from the LoginForm class
     form = LoginForm()
-
-    # when the browser sends the POST request, form.validate_on_submit() 
-    # will gather all the data and run all the validators attached to fields,    
-    # else (if the the browser sends the GET request 
-    # or if at least one field fails validation) will return False
 
     if form.validate_on_submit():
 
@@ -83,11 +71,13 @@ def login():
 
 @app.route('/logout')
 def logout():
+    
     logout_user()
     return redirect(url_for('index'))
 
 @app.route('/register_fbs', methods=['GET', 'POST'])
 def register():
+
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = RegistrationForm()
@@ -99,13 +89,6 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        # give cero points to the new user no hace falta
-        # user_points = Points(user_id=User.query.filter_by(username=form.username.data).first().id,
-        #                 timestamp = datetime.utcnow(),
-        #                 points = 0)
-        # db.session.add(user_points)
-        # db.session.commit()
-    
         user.set_password(form.password.data)
 
         flash('Congratulations, you are now a registered user!')
@@ -163,18 +146,10 @@ def edit_profile():
 
 @app.route('/bet', methods=['GET', 'POST'])
 @login_required
-# the @login_required decorator intercepts the request and responds with a redirect to /login, 
-# adding a query string argument to the URL, making the complete redirect URL /login?next=/index.
-# The next query string argument is set to the original URL, so the application can use 
-# that to redirect back after login.
 def bet():
-    # api request for matches/fixture
-    # get current round
-    rounds = [matches['round'] for matches in fixture if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
-    
-    # get matches of next round
-    next_round = [matches for matches in fixture if matches['round'] == max(rounds) + 1]
 
+    # get matches of next round
+    next_round = [matches for matches in fixture if matches['round'] == helpers.up_rounds(fixture) + 1]
     # access to Bets database
     bet_matches = Bets.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
     # make list of matches in bets
@@ -245,12 +220,10 @@ def results():
 
     show_points = Points.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
 
-    rounds = [matches['round'] for matches in fixture if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
-
     points = []
 
     # get matches of next round
-    next_round = [matches for matches in fixture if matches['round'] == max(rounds) + 1]
+    next_round = [matches for matches in fixture if matches['round'] == helpers.up_rounds(fixture) + 1]
 
     if not bet_matches:
         total = 'no_bets'

@@ -109,6 +109,9 @@ def team(league):
     except (KeyError, TypeError, ValueError):
         return None
 
+def up_rounds(all_matches):
+    rounds = [matches['round'] for matches in all_matches if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
+    return max(rounds)
 
 def score(bet_home, score_home, bet_away, score_away):
     if bet_home == score_home and bet_away == score_away:

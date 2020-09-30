@@ -7,21 +7,13 @@ from app import api_connection
 
 class LoginForm(FlaskForm):
 
-    # The four classes that represent the field types are imported directly 
-    # from the WTForms package. For each field, an object is created as a 
-    # class variable in the LoginForm class. Each field is 
-    # given a description or label as a first argument.
-
-    # The optional validators argument is 
-    # used to attach validation behaviors to fields.
-    # The DataRequired validator checks that the field is not submitted empty. 
-
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
 
 class RegistrationForm(FlaskForm):
+
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
@@ -39,6 +31,7 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Please use a different email address.')
 
 class EditProfileForm(FlaskForm):
+    
     username = StringField('Username', validators=[DataRequired()])
     fav_squad = SelectField('Fav\' Squad',choices=api_connection.team('PL'))
     submit = SubmitField('Submit')
