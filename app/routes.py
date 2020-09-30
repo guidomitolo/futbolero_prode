@@ -20,16 +20,14 @@ from datetime import datetime
 # that to redirect back after login.
 
 def index():
-
-    # api requests
+    
+    # # call API once, each time in index
+    global fixture
     fixture = helpers.fixture('PL',datetime.utcnow().strftime('%Y'))
+
+    global tabla
     tabla = helpers.standings('PL',datetime.utcnow().strftime('%Y'))
 
-    # get all rounds until now
-    rounds = [matches['round'] for matches in fixture if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
-    # get matches of current round
-    current_round = [matches for matches in fixture if matches['round'] == max(rounds)]
-    
     # add logo for each team in fixture
     for team in fixture:
         for logo in tabla[1]:
@@ -37,7 +35,12 @@ def index():
                 team['homelogo'] = logo['teamlogo']
             if team['awayTeam'] == logo['team']:
                 team['awaylogo'] = logo['teamlogo']
-    
+
+    # get all rounds until now
+    rounds = [matches['round'] for matches in fixture if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
+    # get matches of current round
+    current_round = [matches for matches in fixture if matches['round'] == max(rounds)]
+        
     return render_template("index.html", title='Home Page', table=tabla[0], fixture=current_round)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -96,12 +99,12 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        # give cero points to the new user
-        user_points = Points(user_id=User.query.filter_by(username=form.username.data).first().id,
-                        timestamp = datetime.utcnow(),
-                        points = 0)
-        db.session.add(user_points)
-        db.session.commit()
+        # give cero points to the new user no hace falta
+        # user_points = Points(user_id=User.query.filter_by(username=form.username.data).first().id,
+        #                 timestamp = datetime.utcnow(),
+        #                 points = 0)
+        # db.session.add(user_points)
+        # db.session.commit()
     
         user.set_password(form.password.data)
 
@@ -112,16 +115,27 @@ def register():
 @app.route('/user/<username>')
 @login_required
 def user(username):
+
     user = User.query.filter_by(username=username).first_or_404()
     users = User.query.all()
-    
-    user_list = [{'nombre':user.username,'puntos': user.rank.first().points} for user in users]
-    ranking = sorted(user_list, key=lambda diccionario: diccionario['puntos'], reverse=True)
+
+    users_points = db.session.query(Points.user_id, db.func.max(Points.points)).group_by(Points.user_id).all()
+
+    ranking = []
+    if users_points:
+        for row in range(len(users)):
+            if users[row].id == users_points[row][0]:
+                ranking.append({'name':users[row].username,'points':users_points[row][1]})
+    else:
+        ranking = False
+
+    # user_list = [{'nombre':user.username,'puntos': user.rank.first().points} for user in users]
+    # ranking = sorted(user_list, key=lambda diccionario: diccionario['puntos'], reverse=True)
 
     return render_template('user.html',
                     user=user, 
                     logo=helpers.logo('PL',user.fav_squad),
-                    ranking=enumerate(ranking))
+                    ranking=ranking)
 
 # @before_request decorator from Flask register the decorated function to be executed right before the view function
 @app.before_request
@@ -155,13 +169,11 @@ def edit_profile():
 # that to redirect back after login.
 def bet():
     # api request for matches/fixture
-    fixture = helpers.fixture('PL',datetime.utcnow().strftime('%Y'))
     # get current round
     rounds = [matches['round'] for matches in fixture if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
+    
     # get matches of next round
-
-    ####### OJO OJO OJO OJO
-    next_round = [matches for matches in fixture if matches['round'] == max(rounds) -1]
+    next_round = [matches for matches in fixture if matches['round'] == max(rounds) + 1]
 
     # access to Bets database
     bet_matches = Bets.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
@@ -226,7 +238,6 @@ def bet():
 @login_required
 def results():
 
-    fixture = helpers.fixture('PL',datetime.utcnow().strftime('%Y'))
     bet_matches = Bets.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
 
     # evaluate bets of the played matchets
@@ -236,9 +247,12 @@ def results():
 
     rounds = [matches['round'] for matches in fixture if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
 
-    last_round = [matches for matches in fixture if matches['round'] == max(rounds) - 1]
+    last_round = [matches for matches in fixture if matches['round'] == max(rounds)]
 
     points = []
+
+    # PROBLEMÓN: LA APUESTA HECHA PARA LA "PROXIMA FECHA" ES "PROCESADA" PARA LA PRESENTE
+    # ¿AGREGO UN "NO MATCHS YET"?
 
     # add corresponding data in dictionary to show on template
     for match in last_round:
@@ -262,7 +276,5 @@ def results():
         total = False
     else:
         total = sum([num for num in points if isinstance(num,int)])
-    print(points)
-    print(total)
 
     return render_template("results.html", title='Home Page', table=last_round, total=total)

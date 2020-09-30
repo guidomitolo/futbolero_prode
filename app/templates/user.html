@@ -19,23 +19,25 @@
             </tr>
         </table>
     </div>
-    <div>
-        <h3>Ranking de usuarios</h3>
-        {% for rank, row in ranking %}
-        <table>
-            <tr>
-                <td>Ranking</td>
-                <td>Nombre</td>
-                <td>Puntos</td>
-            </tr>
-            <tr>
-                <td>{{ rank + 1 }}</td>
-                <td>{{ row.nombre }}</td>
-                <td><b>{{row.puntos }}</b></td>
-            </tr>
-        </table>
-    </div>
-    
-    {% endfor %}
-
+    <h3>Ranking de usuarios</h3>
+        {% if ranking == false %}
+            <p>Todavía no hay puntos</p>
+        {% else %}
+        <div>
+            {% for row in ranking %}
+            <table>
+                <tr>
+                    <td>Ranking</td>
+                    <td>Nombre</td>
+                    <td>Puntos</td>
+                </tr>
+                <tr>
+                    <td>{{ row }} {{forloop.counter}}</td>
+                    <td>{{ row.name }}</td>
+                    <td><b>{{ row.points }}</b></td>
+                </tr>
+            </table>
+            {% endfor %}
+        </div>
+        {% endif %}
 {% endblock %}

@@ -12,9 +12,11 @@
                     <tr>
                         <th>Fecha</th>
                         <th>Local</th>
+                        <th></th>
                         <th>Resultado Local</th>
                         <th>Apuesta Local</th>
                         <th>Visitante</th>
+                        <th></th>
                         <th>Resultado Visitante</th>
                         <th>Apuesta Visitante</th>
                         <th>Puntos</th>
@@ -25,6 +27,9 @@
                         <tr>
                             <td>{{ row.date }}</td>
                             <td align="right">{{ row.homeTeam }}</td>
+                            <td>
+                                <img src={{ row.homelogo }} alt="Lamp" width="32" height="32">
+                            </td>
                             {% if row.score[0] == None %}
                                 <td align="center">Pendiente</td>
                             {% else %}
@@ -32,6 +37,9 @@
                             {% endif %}
                             <td align="center">{{ row.bet_away }}</td>
                             <td>{{ row.awayTeam }}</td>
+                            <td>
+                                <img src={{ row.awaylogo }} alt="Lamp" width="32" height="32">
+                            </td>
                             {% if row.score[1] == None %}
                                 <td align="center">Pendiente</td>
                             {% else %}
