@@ -247,8 +247,6 @@ def results():
 
     rounds = [matches['round'] for matches in fixture if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
 
-    # last_round = [matches for matches in fixture if matches['round'] == max(rounds)]
-
     points = []
 
     # get matches of next round

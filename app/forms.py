@@ -69,3 +69,5 @@ class GamblingForm(FlaskForm):
         for field in bet.data:
             if field['home'] == None or field['away'] == None:
                 raise ValidationError('Completar los campos numéricos')
+            elif field['home'] < 0 or field['away'] < 0:
+                raise ValidationError('Por favor completar con números Positivos')
