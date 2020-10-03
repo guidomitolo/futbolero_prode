@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block futbolero_content %}
+    <h1>Ingresar</h1>
+    <div class="row">
+        <div class="col-md-4">
+            {{ wtf.quick_form(form) }}
+        </div>
+        <p>Todavía no sos miembro?<a href="{{ url_for('register') }}">Hacé click para registrarte!</a></p>
+    </div>
+{% endblock %}

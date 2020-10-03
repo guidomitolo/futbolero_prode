@@ -3,38 +3,38 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextA
 from wtforms import FormField, FieldList, IntegerField, Form
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length, NumberRange, InputRequired
 from app.models import User
-from app import api_connection
+from app import helpers
 
 class LoginForm(FlaskForm):
 
-    username = StringField('Username', validators=[DataRequired()])
+    username = StringField('Nombre de usuario', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
-    remember_me = BooleanField('Remember Me')
-    submit = SubmitField('Sign In')
+    remember_me = BooleanField('Recordarme')
+    submit = SubmitField('Ingresar')
 
 class RegistrationForm(FlaskForm):
 
-    username = StringField('Username', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    username = StringField('Nombre de usuario', validators=[DataRequired()])
+    email = StringField('Correo', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
-    password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Register')
+    password2 = PasswordField('Repetir Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Registrar')
 
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
         if user is not None:
-            raise ValidationError('Please use a different username.')
+            raise ValidationError('Por favor usar otro nombre de usuario')
 
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
-            raise ValidationError('Please use a different email address.')
+            raise ValidationError('Por favor usar otro correo electrónico')
 
 class EditProfileForm(FlaskForm):
     
-    username = StringField('Username', validators=[DataRequired()])
-    fav_squad = SelectField('Fav\' Squad',choices=api_connection.team('PL'))
-    submit = SubmitField('Submit')
+    username = StringField('Nombre de usuario', validators=[DataRequired()])
+    fav_squad = SelectField('Fav\' Squad',choices=helpers.team('PL'))
+    submit = SubmitField('Guardar')
 
     # constructor to check if the user is logged
     def __init__(self, original_username, *args, **kwargs):
@@ -49,7 +49,7 @@ class EditProfileForm(FlaskForm):
         if username.data != self.original_username:
             user = User.query.filter_by(username=self.username.data).first()
             if user is not None:
-                raise ValidationError('Please use a different username.')
+                raise ValidationError('Por favor usar otro nombre de usuario')
 
 class BetForm(Form):
     home = IntegerField()

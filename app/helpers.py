@@ -127,6 +127,8 @@ def score(bet_home, score_home, bet_away, score_away):
 
 def load(all_matches, all_bets, user):
 
+    # tiene q cargar todo de todos los usuarios
+
     points_db = Points.query.filter_by(user_id=User.query.filter_by(username=user).first().id).all()
     points_recorded = [score.match_id for score in points_db]
 
@@ -139,3 +141,21 @@ def load(all_matches, all_bets, user):
                     points= score(int(str(bet.score_home)), match['score'][0], int(str(bet.score_away)), match['score'][1]))
                     db.session.add(points_match)
                     db.session.commit()
+
+def load(all_matches, all_bets):
+
+    points_db = Points.query.all()
+    points_recorded = [(score.user_id,score.match_id)  for score in points_db]
+    bets_recorded = [(score.user_id,score.match_id) for score in all_bets]
+
+    for match in all_matches:
+        for bet in all_bets:
+            if int(str(bet.match_id)) == match['matchID']:
+                if (bet.user_id, bet.match_id) not in points_recorded:
+                    if match['score'][0] != None:
+                        points_match = Points(user_id=bet.user_id, 
+                        match_id=match['matchID'],
+                        points= score(int(str(bet.score_home)), match['score'][0], int(str(bet.score_away)), match['score'][1]))
+                        db.session.add(points_match)
+                        db.session.commit()
+

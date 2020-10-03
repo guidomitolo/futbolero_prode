@@ -1,0 +1,91 @@
+2020-10-03 12:25:35,850 ERROR: Exception on /user/guido [GET] [in /home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py:1891]
+Traceback (most recent call last):
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask_login/utils.py", line 272, in decorated_view
+    return func(*args, **kwargs)
+  File "/home/guido/Dropbox/cs50x/final_project/app/routes.py", line 112, in user
+    return render_template('user.html',
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/templating.py", line 137, in render_template
+    return _render(
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/templating.py", line 120, in _render
+    rv = template.render(context)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/environment.py", line 1090, in render
+    self.environment.handle_exception()
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/environment.py", line 832, in handle_exception
+    reraise(*rewrite_traceback_stack(source=source))
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/_compat.py", line 28, in reraise
+    raise value.with_traceback(tb)
+  File "/home/guido/Dropbox/cs50x/final_project/app/templates/user.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "/home/guido/Dropbox/cs50x/final_project/app/templates/base.html", line 80, in top-level template code
+    {% block content %}{% endblock %}
+  File "/home/guido/Dropbox/cs50x/final_project/app/templates/user.html", line 35, in block "content"
+    <td>{{ row }} {{forloop.counter}}</td>
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/environment.py", line 471, in getattr
+    return getattr(obj, attribute)
+jinja2.exceptions.UndefinedError: 'forloop' is undefined
+2020-10-03 12:27:09,353 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-03 12:27:21,280 ERROR: Exception on /user/guido [GET] [in /home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py:1891]
+Traceback (most recent call last):
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask_login/utils.py", line 272, in decorated_view
+    return func(*args, **kwargs)
+  File "/home/guido/Dropbox/cs50x/final_project/app/routes.py", line 112, in user
+    return render_template('user.html',
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/templating.py", line 137, in render_template
+    return _render(
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/templating.py", line 120, in _render
+    rv = template.render(context)
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/environment.py", line 1090, in render
+    self.environment.handle_exception()
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/environment.py", line 832, in handle_exception
+    reraise(*rewrite_traceback_stack(source=source))
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/_compat.py", line 28, in reraise
+    raise value.with_traceback(tb)
+  File "/home/guido/Dropbox/cs50x/final_project/app/templates/user.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "/home/guido/Dropbox/cs50x/final_project/app/templates/base.html", line 80, in top-level template code
+    {% block content %}{% endblock %}
+  File "/home/guido/Dropbox/cs50x/final_project/app/templates/user.html", line 35, in block "content"
+    <!-- <td>{{ row }} {{forloop.counter}}</td> -->
+  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/jinja2/environment.py", line 471, in getattr
+    return getattr(obj, attribute)
+jinja2.exceptions.UndefinedError: 'forloop' is undefined
+2020-10-03 12:27:51,509 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-03 12:35:50,281 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-03 12:36:09,088 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-03 12:51:06,611 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-03 12:51:51,430 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-03 12:54:36,590 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-03 12:55:30,077 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-03 12:56:33,023 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-03 13:01:42,758 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-03 13:02:01,006 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-03 13:03:29,782 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-03 13:11:43,688 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-03 13:12:18,383 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-03 13:14:22,174 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-03 13:15:33,204 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-03 13:17:51,507 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]

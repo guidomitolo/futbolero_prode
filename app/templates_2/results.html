@@ -1,26 +1,27 @@
 {% extends "base.html" %} 
 
-{% block content %}
-    <h1>Hi, {{ current_user.username }}!</h1>
+{% block futbolero_content %}
     <div>
         {% if total == 'closed' %}
             <p>Fecha cerrada</p>
         {% elif total == 'no_bets' %}
             <p>No haya apuestas</p>
         {% else %}
-            <table>
-                <p>Próxima fecha</p>
-                <thead>
+            <h3><b>Fecha en juego</b></h3>
+            <h4>Temporada {{ table[0].season}}</h4>
+            <h4>Semana {{ table[0].round  }}</h4>
+            <table class="table">
+                <thead class="thead-dark">
                     <tr>
                         <th>Fecha</th>
                         <th>Local</th>
                         <th></th>
-                        <th>Resultado Local</th>
-                        <th>Apuesta Local</th>
+                        <th>Resultado<br>Local</th>
+                        <th>Apuesta<br>Local</th>
                         <th>Visitante</th>
                         <th></th>
-                        <th>Resultado Visitante</th>
-                        <th>Apuesta Visitante</th>
+                        <th>Resultado<br>Visitante</th>
+                        <th>Apuesta<br>Visitante</th>
                         <th>Puntos</th>
                     </tr>
                 </thead>
@@ -37,7 +38,7 @@
                             {% else %}
                                 <td align="center">{{ row.score[0] }}</td>
                             {% endif %}
-                            <td align="center">{{ row.bet_local}}</td>
+                            <td align="center">{{ row.bet_away }}</td>
                             <td>{{ row.awayTeam }}</td>
                             <td>
                                 <img src={{ row.awaylogo }} alt="Lamp" width="32" height="32">

@@ -3,6 +3,7 @@ from app import app, helpers
 from app.forms import LoginForm, RegistrationForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Points, Bets
+from sqlalchemy import desc
 from app import db
 from app.forms import RegistrationForm, EditProfileForm, GamblingForm
 
@@ -34,40 +35,32 @@ def index():
     # get matches of current round
     current_round = [matches for matches in fixture if matches['round'] == helpers.up_rounds(fixture)]
         
-    return render_template("index.html", title='Home Page', table=tabla[0], fixture=current_round)
+    return render_template("index.html", title='Bienvenido', table=tabla[0], fixture=current_round)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 
-    # current_user can be used to obtain the user object that 
-    # represents the client of the request
-    # is_authenticated property is True if the user has valid credentials
     if current_user.is_authenticated:
-    # if already logged in users goes to index page        
         return redirect(url_for('index'))
 
-    # form object instantiated from the LoginForm class
     form = LoginForm()
 
     if form.validate_on_submit():
 
-        # query the database to find the user with the filter_by().
-        # instead of all(), first() returns one result only
         user = User.query.filter_by(username=form.username.data).first() 
         if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
+            flash('Usuario o Password Inválidos')
             return redirect(url_for('login'))
 
         login_user(user, remember=form.remember_me.data)
         
-        # this contains all the information that the client sent with the request
         next_page = request.args.get('next')
 
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
         return redirect(next_page)
     
-    return render_template('login.html', title='Sign In', form=form)
+    return render_template('login.html', title='Ingresar', form=form)
 
 @app.route('/logout')
 def logout():
@@ -80,10 +73,10 @@ def register():
 
     if current_user.is_authenticated:
         return redirect(url_for('index'))
+    
     form = RegistrationForm()
     if form.validate_on_submit():
 
-        # register the user
         user = User(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
         db.session.add(user)
@@ -91,7 +84,7 @@ def register():
 
         user.set_password(form.password.data)
 
-        flash('Congratulations, you are now a registered user!')
+        flash('Felicitaciones, usted se ha registrado exitosamente!')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
@@ -99,28 +92,25 @@ def register():
 @login_required
 def user(username):
 
-    user = User.query.filter_by(username=username).first_or_404()
+    current_user = User.query.filter_by(username=username).first_or_404()
     users = User.query.all()
 
-    users_points = db.session.query(Points.user_id, db.func.max(Points.points)).group_by(Points.user_id).all()
+    users_points = db.session.query(Points.user_id, db.func.max(Points.points).label('max')).group_by(Points.user_id).order_by(desc('max')).all()
 
     ranking = []
     if users_points:
-        for row in range(len(users)):
-            if users[row].id == users_points[row][0]:
-                ranking.append({'name':users[row].username,'points':users_points[row][1]})
+        for row in range(len(users_points)):
+            for user in users:
+                if user.id == users_points[row][0]:
+                    ranking.append({'name':user.username,'points':users_points[row][1]})
     else:
         ranking = False
 
-    # user_list = [{'nombre':user.username,'puntos': user.rank.first().points} for user in users]
-    # ranking = sorted(user_list, key=lambda diccionario: diccionario['puntos'], reverse=True)
-
     return render_template('user.html',
-                    user=user, 
+                    user=current_user, 
                     logo=helpers.logo('PL',user.fav_squad),
                     ranking=ranking)
 
-# @before_request decorator from Flask register the decorated function to be executed right before the view function
 @app.before_request
 def before_request():
     if current_user.is_authenticated:
@@ -137,7 +127,7 @@ def edit_profile():
         current_user.username = form.username.data
         current_user.fav_squad = form.fav_squad.data
         db.session.commit()
-        flash('Your changes have been saved.')
+        flash('Los cambios han sido guardados')
         return redirect(url_for('edit_profile'))
     elif request.method == 'GET':
         form.username.data = current_user.username
@@ -204,7 +194,6 @@ def bet():
                         score_away = value['away'])
                         db.session.add(new_bet)
                         db.session.commit()
-
             flash('Has enviado una apuesta')
 
     return render_template("bet.html", title='Home Page', table=next_round, form=form, value=last)
@@ -213,22 +202,23 @@ def bet():
 @login_required
 def results():
 
-    bet_matches = Bets.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
-
+    bet_matches = Bets.query.all()
     # evaluate bets of the played matchets
-    helpers.load(fixture, bet_matches, current_user.username)
+    helpers.load(fixture, bet_matches)
 
     show_points = Points.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
 
     points = []
 
-    # get matches of next round
+    # get matches of current and next round
+    current_round = [matches for matches in fixture if matches['round'] == helpers.up_rounds(fixture)]
     next_round = [matches for matches in fixture if matches['round'] == helpers.up_rounds(fixture) + 1]
 
+    # show matches of when "next round" becomes "current round"
     if not bet_matches:
         total = 'no_bets'
-    elif datetime.utcnow().date() == datetime.strptime(next_round[0]['date'], '%d-%m-%Y').date():
-        for match in next_round:
+    elif datetime.utcnow().date() != datetime.strptime(next_round[0]['date'], '%d-%m-%Y').date():
+        for match in current_round:
             for score in show_points:
                 for bet in bet_matches:
                     # add match
@@ -247,4 +237,4 @@ def results():
     else:
         total = 'closed'
 
-    return render_template("results.html", title='Home Page', table=next_round, total=total)
+    return render_template("results.html", title='Home Page', table=current_round, total=total)

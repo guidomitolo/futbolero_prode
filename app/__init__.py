@@ -9,6 +9,8 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_moment import Moment
 
+from flask_bootstrap import Bootstrap
+
 app = Flask(__name__)
 
 app.config.from_object(Config)
@@ -18,9 +20,12 @@ migrate = Migrate(app, db)
 
 login = LoginManager(app)
 login.login_view = 'login'
+login.login_message = u"Por favor ingresar para acceder al sitio."
 
 moment = Moment()
 moment.init_app(app)
+
+bootstrap = Bootstrap(app)
 
 if not app.debug:
 
@@ -36,4 +41,4 @@ if not app.debug:
     app.logger.setLevel(logging.INFO)
     app.logger.info('Futbolero startup')
 
-from app import routes, models, errors
+from app import routes, models, errors, helpers
