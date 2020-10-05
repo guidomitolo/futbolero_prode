@@ -1,0 +1,39 @@
+{% extends "base.html" %} 
+
+{% block content %}
+    <h1>Hi, {{ user }}!</h1>
+    <div>
+        {% if history is defined%}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Local</th>
+                        <th>Resultado Local</th>
+                        <th>Apuesta Local</th>
+                        <th>Visitante</th>
+                        <th>Resultado Visitante</th>
+                        <th>Apuesta Visitante</th>
+                        <th>Puntos</th>
+                    </tr>
+                </thead>
+                <tbody>    
+                    {% for row in history %}
+                        <tr>
+                            <td>{{ row.round }}</td>
+                            <td align="right">{{ row.homeTeam }}</td>
+                            <td align="center">{{ row.score_home }}</td>
+                            <td align="center">{{ row.bet_local}}</td>
+                            <td>{{ row.awayTeam }}</td>
+                            <td align="center">{{ row.score_away }}</td>
+                            <td align="center">{{ row.bet_away }}</td>
+                            <td>{{ row.points }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No hay apuestas</p>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -125,28 +125,30 @@ def score(bet_home, score_home, bet_away, score_away):
     else:
         return 0
 
-def load(all_matches, all_bets, user):
+# def load(all_matches, all_bets, user):
 
-    # tiene q cargar todo de todos los usuarios
+#     # tiene q cargar todo de todos los usuarios
 
-    points_db = Points.query.filter_by(user_id=User.query.filter_by(username=user).first().id).all()
-    points_recorded = [score.match_id for score in points_db]
+#     points_db = Points.query.filter_by(user_id=User.query.filter_by(username=user).first().id).all()
+#     points_recorded = [score.match_id for score in points_db]
 
-    for match in all_matches:
-        for bet in all_bets:
-            if int(str(bet.match_id)) == match['matchID'] and match['matchID'] not in points_recorded:
-                if match['score'][0] != None:
-                    points_match = Points(user_id=User.query.filter_by(username=user).first().id, 
-                    match_id=match['matchID'],
-                    points= score(int(str(bet.score_home)), match['score'][0], int(str(bet.score_away)), match['score'][1]))
-                    db.session.add(points_match)
-                    db.session.commit()
+#     for match in all_matches:
+#         for bet in all_bets:
+#             if int(str(bet.match_id)) == match['matchID'] and match['matchID'] not in points_recorded:
+#                 if match['score'][0] != None:
+#                     points_match = Points(user_id=User.query.filter_by(username=user).first().id, 
+#                     match_id=match['matchID'],
+#                     points= score(int(str(bet.score_home)), match['score'][0], int(str(bet.score_away)), match['score'][1]))
+#                     db.session.add(points_match)
+#                     db.session.commit()
 
 def load(all_matches, all_bets):
 
     points_db = Points.query.all()
     points_recorded = [(score.user_id,score.match_id)  for score in points_db]
     bets_recorded = [(score.user_id,score.match_id) for score in all_bets]
+
+    # no identifica usuario y apuesta
 
     for match in all_matches:
         for bet in all_bets:

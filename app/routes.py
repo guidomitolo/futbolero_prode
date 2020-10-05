@@ -12,6 +12,8 @@ from werkzeug.urls import url_parse
 
 from datetime import datetime
 
+import pandas as pd
+
 @app.route('/')
 @app.route('/index')
 @login_required
@@ -94,8 +96,7 @@ def user(username):
 
     current_user = User.query.filter_by(username=username).first_or_404()
     users = User.query.all()
-
-    users_points = db.session.query(Points.user_id, db.func.max(Points.points).label('max')).group_by(Points.user_id).order_by(desc('max')).all()
+    users_points = db.session.query(Points.user_id, db.func.sum(Points.points).label('sum')).group_by(Points.user_id).order_by(desc('sum')).all()
 
     ranking = []
     if users_points:
@@ -106,10 +107,37 @@ def user(username):
     else:
         ranking = False
 
+    if current_user == ranking[0]['name']:
+        flash('Felicitaciones, vas ganando!')
+
     return render_template('user.html',
                     user=current_user, 
                     logo=helpers.logo('PL',user.fav_squad),
                     ranking=ranking)
+
+@app.route('/history/<username>')
+@login_required
+def history(username):
+
+    points_db = Points.query.filter_by(user_id=User.query.filter_by(username=username).first().id).all()
+    bet_matches = Bets.query.filter_by(user_id=User.query.filter_by(username=username).first().id).all()
+
+    historial = []
+    for match in fixture:
+        for score in points_db:
+            for bet in bet_matches:
+                if match['score'][0] != None:
+                    if match['matchID'] == int(str(score.match_id)) and match['matchID'] == int(str(bet.match_id)):
+                        historial.append({'round':match['round'],
+                            'homeTeam': match['homeTeam'], 
+                            'score_home':match['score'][0],
+                            'bet_local':bet.score_home,
+                            'awayTeam':match['awayTeam'],
+                            'score_away':match['score'][1],
+                            'bet_away':bet.score_away,
+                            'points':score.points})
+    
+    return render_template('history.html', user=username, history=historial)
 
 @app.before_request
 def before_request():
@@ -202,38 +230,31 @@ def bet():
 @login_required
 def results():
 
-    bet_matches = Bets.query.all()
-    # evaluate bets of the played matchets
-    helpers.load(fixture, bet_matches)
+    helpers.load(fixture, Bets.query.all())
 
     show_points = Points.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
-
-    points = []
 
     # get matches of current and next round
     current_round = [matches for matches in fixture if matches['round'] == helpers.up_rounds(fixture)]
     next_round = [matches for matches in fixture if matches['round'] == helpers.up_rounds(fixture) + 1]
 
-    # show matches of when "next round" becomes "current round"
-    if not bet_matches:
+    user_bets = Bets.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
+
+    total = 0
+    if not user_bets:
         total = 'no_bets'
     elif datetime.utcnow().date() != datetime.strptime(next_round[0]['date'], '%d-%m-%Y').date():
         for match in current_round:
             for score in show_points:
-                for bet in bet_matches:
-                    # add match
+                for bet in user_bets:
                     if match['matchID'] == int(str(score.match_id)) and match['matchID'] == int(str(bet.match_id)):
                         match['bet_local'] = bet.score_home
                         match['bet_away'] = bet.score_away
-                        # add points
                         if match['score'][0] != None:
                             match['points'] = score.points
-                            points.append(score.points)
-                        # add none if the match was not played
+                            total = total + score.points
                         else:
                             match['points'] = None
-                            points.append(None)
-        total = sum([num for num in points if isinstance(num,int)])
     else:
         total = 'closed'
 
