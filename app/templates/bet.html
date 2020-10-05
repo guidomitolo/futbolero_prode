@@ -1,20 +1,21 @@
-<!-- i can now simplify index.html by making it inherit from base.html -->
 {% extends "base.html" %} 
 
 {% block content %}
-    <h1>Hi, {{ current_user.username }}!</h1>
-    <div>
+    <div class='container'>
+        <h1>Hola {{ current_user.username }}!</h1>
+        <h2>Apuestas</h2>
+        <h3>Temporada table[0].season</h3>
+        <h3>Semana table[0].round</h3>
         <table>
-            <p>Próxima fecha</p>
+            <h3>Próxima fecha</h3>
             <thead>
                 <tr>
-                    <th>Temporada</th>
-                    <th>Fase</th>
+
                     <th>Fecha</th>
                     <th>Local</th>
                     <th></th>
-                    <th>Resultado Local</th>
-                    <th>Resultado Visitante</th>
+                    <th>Resultado<br>Local</th>
+                    <th>Resultado<br>Visitante</th>
                     <th></th>
                     <th>Visitante</th>
                 </tr>
@@ -27,8 +28,6 @@
 
                 {% for row in range(10) %}
                     <tr>
-                        <td>{{ table[row].season }}</td>
-                        <td>{{ table[row].round }}</td>
                         <td>{{ table[row].date }}</td>
                         <td>{{ table[row].homeTeam }}</td>
                         <td>
@@ -64,12 +63,8 @@
                 {% else %}
                     <td>Las apuestas ya se han cerrado</td>
                 {% endif %}
-
                 </form>
             </tbody>
         </table>
-        <div>
-
-        </div>
     </div>
 {% endblock %}

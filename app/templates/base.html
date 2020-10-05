@@ -13,22 +13,6 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     </head>
     <body>
-        <!-- navbar separated by line -->
-        <!-- <div>
-            Futbolero - 
-            <a href="{{ url_for('index') }}">Inicio</a>
-            {% if current_user.is_anonymous %}
-            <a href="{{ url_for('login') }}">Ingresar</a>
-            {% else %}
-            <a href="{{ url_for('user', username=current_user.username) }}">Perfil</a>
-            <a href="{{ url_for('bet') }}">Apostar</a>
-            <a href="{{ url_for('results') }}">Puntos</a>
-            {% if user == current_user %}
-            <a href="{{ url_for('edit_profile') }}">Editar perfil</a>
-            {% endif %}
-            <a href="{{ url_for('logout') }}">Logout</a>
-            {% endif %}
-        </div> -->
         <nav class="navbar navbar-default" style="background-color: #e3f2fd;">
             <div class="container">
                 <div class="navbar-header">
@@ -57,26 +41,21 @@
                     {% if user == current_user %}
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="{{ url_for('edit_profile') }}">Editar perfil</a></li>
+                        <li><a href="{{ url_for('history', username=current_user.username) }}">Historial</a></li>
                     </ul>
                     {% endif %}
                 </div>
             </div>
         </nav>
-
-
-
-
-
-        <!-- flashed message from login function -->
         {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
+        <div class='container'>
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-primary" role="alert">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+        </div>
         {% block content %}{% endblock %}
     </body>
 </html>

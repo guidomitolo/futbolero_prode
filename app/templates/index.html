@@ -1,15 +1,14 @@
-<!-- i can now simplify index.html by making it inherit from base.html -->
 {% extends "base.html" %} 
 
 {% block content %}
-    <h1>Hi, {{ current_user.username }}!</h1>
-    <div>
+    <div class='container'>
+        <h1>Hola {{ current_user.username }}!</h1>
+        <h3>Temporada fixture[0].season</h3>
+        <h3>Semana fixture[0].round</h3>
         <table>
-            <p>Fecha en juego</p>
+            <h2>Fecha en juego</h2>
             <thead>
                 <tr>
-                    <th>Temporada</th>
-                    <th>Fase</th>
                     <th>Fecha</th>
                     <th>Local</th>
                     <th></th>
@@ -21,8 +20,6 @@
             <tbody>
             {% for row in fixture %}
                 <tr>
-                    <td>{{ row.season }}</td>
-                    <td>{{ row.round }}</td>
                     <td>{{ row.date }}</td>
                     <td align="right">{{ row.homeTeam }}</td>
                     <td>
@@ -42,12 +39,11 @@
             </tbody>
         </table>
     </div>
-    <div>
+    <div class='container'>
         <table>
-            <p>Tabla</p>
+            <h2>Tabla de posiciones</h2>
             <thead>
                 <tr>
-                    <th>Temporada</th>
                     <th>Posición</th>
                     <th></th>
                     <th>Equipo</th>
@@ -64,7 +60,6 @@
             <tbody>
             {% for row in table %}
                 <tr>
-                    <td>{{ row.season }}</td>
                     <td>{{ row.standing }}</td>
                     <td>
                         <img src={{ row.teamlogo }} alt="Lamp" width="32" height="32">

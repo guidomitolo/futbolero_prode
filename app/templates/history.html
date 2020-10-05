@@ -1,19 +1,19 @@
 {% extends "base.html" %} 
 
 {% block content %}
-    <h1>Hi, {{ user }}!</h1>
-    <div>
-        {% if history is defined%}
+    <div class='container'>
+        <h1>Hola {{ user }}!</h1>
+        {% if history is defined %}
             <table>
                 <thead>
                     <tr>
                         <th>Fecha</th>
                         <th>Local</th>
-                        <th>Resultado Local</th>
-                        <th>Apuesta Local</th>
+                        <th>Resultado<br>Local</th>
+                        <th>Apuesta<br>Local</th>
                         <th>Visitante</th>
-                        <th>Resultado Visitante</th>
-                        <th>Apuesta Visitante</th>
+                        <th>Resultado<br>Visitante</th>
+                        <th>Apuesta<br>Visitante</th>
                         <th>Puntos</th>
                     </tr>
                 </thead>

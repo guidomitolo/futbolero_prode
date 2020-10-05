@@ -1,15 +1,18 @@
 {% extends "base.html" %} 
 
 {% block content %}
-    <h1>Hi, {{ current_user.username }}!</h1>
-    <div>
+    <div class='container'>
+        <h1>Hola {{ current_user.username }}!</h1>
+        <h2>Puntos</h2>
         {% if total == 'closed' %}
             <p>Fecha cerrada</p>
         {% elif total == 'no_bets' %}
             <p>No haya apuestas</p>
         {% else %}
+            <h3>Temporada table[0].season</h3>
+            <h3>Semana table[0].round</h3>
             <table>
-                <p>Próxima fecha</p>
+                <h3>Próxima fecha</h3>
                 <thead>
                     <tr>
                         <th>Fecha</th>

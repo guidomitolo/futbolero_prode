@@ -74,3 +74,11 @@ Traceback (most recent call last):
   File "/home/guido/Dropbox/cs50x/final_project/app/routes.py", line 122, in history
     points_db = Points.query.filter_by(user_id=User.query.filter_by(username=username).first().id).all()
 AttributeError: 'NoneType' object has no attribute 'id'
+2020-10-05 09:45:59,239 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-05 09:52:14,334 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-05 09:56:28,357 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-05 09:58:12,249 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-05 09:58:29,031 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-05 09:59:19,753 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-05 10:01:22,385 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-05 10:04:10,079 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]

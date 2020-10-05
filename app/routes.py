@@ -12,8 +12,6 @@ from werkzeug.urls import url_parse
 
 from datetime import datetime
 
-import pandas as pd
-
 @app.route('/')
 @app.route('/index')
 @login_required
@@ -107,7 +105,7 @@ def user(username):
     else:
         ranking = False
 
-    if current_user == ranking[0]['name']:
+    if username == ranking[0]['name']:
         flash('Felicitaciones, vas ganando!')
 
     return render_template('user.html',
