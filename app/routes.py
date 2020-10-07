@@ -108,6 +108,8 @@ def user(username):
     if username == ranking[0]['name']:
         flash('Felicitaciones, vas ganando!')
 
+    helpers.points_plot(fixture, username)
+
     return render_template('user.html',
                     user=current_user, 
                     logo=helpers.logo('PL',user.fav_squad),

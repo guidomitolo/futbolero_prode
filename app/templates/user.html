@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class='container'>
+    <div class='container' style="margin-top: 40px;">
         <table>
             <tr valign="top">
                 <td><img src="{{ user.avatar(128) }}"></td>
                 <td>
-                    <h1>Usuario: {{ user.username }}</h1>
+                    <h1 style="margin-left: 20px;">Usuario: {{ user.username }}</h1>
                     {% if user.fav_squad %}
-                        <p>Soy fan del <b>{{ user.fav_squad }}</b>
-                        <img src={{ logo }} width="32" height="32">
+                        <p style="margin-left: 20px;">Soy fan del <b>{{ user.fav_squad }}</b>
+                        <img src={{ logo }} width="32" height="32" style="margin-left: 20px;">
                         </p>
                     {% endif %}
                     {% if user.last_seen %}
-                        <p>Última conexión: {{ moment(user.last_seen).format('LLL') }}</p>
+                        <p style="margin-left: 20px;">Última conexión: {{ moment(user.last_seen).format('LLL') }}</p>
                     {% endif %}
                 </td>
             </tr>

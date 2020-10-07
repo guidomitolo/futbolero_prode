@@ -5,6 +5,8 @@ from datetime import datetime
 from app.models import User, Points, Bets
 from app import db
 
+import plotly.graph_objects as go
+
 api_key = os.environ.get("API_KEY")
 api_header = os.environ.get("API_HEADER")
 
@@ -140,3 +142,33 @@ def load(all_matches, all_bets):
                         db.session.add(points_match)
                         db.session.commit()
 
+def points_plot(all_matches, username):
+
+    all_points = Points.query.filter_by(user_id=User.query.filter_by(username=username).first().id).all()
+
+    # creates a list of dictionaries with round, match and points
+    round_matches = []
+    for match in all_matches:
+        for points in all_points:
+            if match['matchID'] == points.match_id:
+                round_matches.append({'round':match['round'],'match':match['matchID'],'points':points.points})
+
+    # creates a list of dictionaries with total points per round
+    round_points = []
+    weeks = set([matches['round'] for matches in round_matches])
+
+    points = []
+
+    for week in weeks:
+        total_points = 0
+        for row in round_matches:
+            if row['round'] == week:
+                total_points = total_points + row['points']
+        # semana.append(week)
+        points.append(total_points)
+            
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=list(weeks), y=points,
+                        mode='lines+markers',
+                        name='lines+markers'))
+    fig.show()

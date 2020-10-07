@@ -7,35 +7,44 @@ import pandas as pd
 
 fixture = [{'season': '2020-2021', 'round': 1, 'date': '13-09-2020', 'matchID': 303757, 'homeTeamID': 65, 'homeTeam': 'Manchester City FC', 'awayTeamID': 58, 'awayTeam': 'Aston Villa FC', 'score': [None, None]}, {'season': '2020-2021', 'round': 1, 'date': '13-09-2020', 'matchID': 303758, 'homeTeamID': 328, 'homeTeam': 'Burnley FC', 'awayTeamID': 66, 'awayTeam': 'Manchester United FC', 'score': [None, None]}, {'season': '2020-2021', 'round': 1, 'date': '12-09-2020', 'matchID': 303759, 'homeTeamID': 63, 'homeTeam': 'Fulham FC', 'awayTeamID': 57, 'awayTeam': 'Arsenal FC', 'score': [0, 3]}, {'season': '2020-2021', 'round': 1, 'date': '12-09-2020', 'matchID': 303764, 'homeTeamID': 354, 'homeTeam': 'Crystal Palace FC', 'awayTeamID': 340, 'awayTeam': 'Southampton FC', 'score': [1, 0]}, {'season': '2020-2021', 'round': 1, 'date': '12-09-2020', 'matchID': 303760, 'homeTeamID': 64, 'homeTeam': 'Liverpool FC', 'awayTeamID': 341, 'awayTeam': 'Leeds United FC', 'score': [4, 3]}, {'season': '2020-2021', 'round': 1, 'date': '12-09-2020', 'matchID': 303763, 'homeTeamID': 563, 'homeTeam': 'West Ham United FC', 'awayTeamID': 67, 'awayTeam': 'Newcastle United FC', 'score': [0, 2]}, {'season': '2020-2021', 'round': 1, 'date': '13-09-2020', 'matchID': 303762, 'homeTeamID': 74, 'homeTeam': 'West Bromwich Albion FC', 'awayTeamID': 338, 'awayTeam': 'Leicester City FC', 'score': [0, 3]}, {'season': '2020-2021', 'round': 1, 'date': '13-09-2020', 'matchID': 303761, 'homeTeamID': 73, 'homeTeam': 'Tottenham Hotspur FC', 'awayTeamID': 62, 'awayTeam': 'Everton FC', 'score': [0, 1]}, {'season': '2020-2021', 'round': 1, 'date': '14-09-2020', 'matchID': 303765, 'homeTeamID': 356, 'homeTeam': 'Sheffield United FC', 'awayTeamID': 76, 'awayTeam': 'Wolverhampton Wanderers FC', 'score': [0, 2]}, {'season': '2020-2021', 'round': 1, 'date': '14-09-2020', 'matchID': 303766, 'homeTeamID': 397, 'homeTeam': 'Brighton & Hove Albion FC', 'awayTeamID': 61, 'awayTeam': 'Chelsea FC', 'score': [1, 3]}, {'season': '2020-2021', 'round': 2, 'date': '19-09-2020', 'matchID': 303772, 'homeTeamID': 62, 'homeTeam': 'Everton FC', 'awayTeamID': 74, 'awayTeam': 'West Bromwich Albion FC', 'score': [5, 2]}, {'season': '2020-2021', 'round': 2, 'date': '19-09-2020', 'matchID': 303775, 'homeTeamID': 341, 'homeTeam': 'Leeds United FC', 'awayTeamID': 63, 'awayTeam': 'Fulham FC', 'score': [4, 3]}, {'season': '2020-2021', 'round': 2, 'date': '19-09-2020', 'matchID': 303773, 'homeTeamID': 66, 'homeTeam': 'Manchester United FC', 'awayTeamID': 354, 'awayTeam': 'Crystal Palace FC', 'score': [1, 3]}, {'season': '2020-2021', 'round': 2, 'date': '19-09-2020', 'matchID': 303770, 'homeTeamID': 57, 'homeTeam': 'Arsenal FC', 'awayTeamID': 563, 'awayTeam': 'West Ham United FC', 'score': [2, 1]}, {'season': '2020-2021', 'round': 2, 'date': '20-09-2020', 'matchID': 303776, 'homeTeamID': 340, 'homeTeam': 'Southampton FC', 'awayTeamID': 73, 'awayTeam': 'Tottenham Hotspur FC', 'score': [2, 5]}, {'season': '2020-2021', 'round': 2, 'date': '20-09-2020', 'matchID': 303769, 'homeTeamID': 67, 'homeTeam': 'Newcastle United FC', 'awayTeamID': 397, 'awayTeam': 'Brighton & Hove Albion FC', 'score': [0, 3]}, {'season': '2020-2021', 'round': 2, 'date': '20-09-2020', 'matchID': 303771, 'homeTeamID': 61, 'homeTeam': 'Chelsea FC', 'awayTeamID': 64, 'awayTeam': 'Liverpool FC', 'score': [0, 2]}, {'season': '2020-2021', 'round': 2, 'date': '20-09-2020', 'matchID': 303774, 'homeTeamID': 338, 'homeTeam': 'Leicester City FC', 'awayTeamID': 328, 'awayTeam': 'Burnley FC', 'score': [4, 2]}, {'season': '2020-2021', 'round': 2, 'date': '21-09-2020', 'matchID': 303768, 'homeTeamID': 58, 'homeTeam': 'Aston Villa FC', 'awayTeamID': 356, 'awayTeam': 'Sheffield United FC', 'score': [1, 0]}, {'season': '2020-2021', 'round': 2, 'date': '21-09-2020', 'matchID': 303767, 'homeTeamID': 76, 'homeTeam': 'Wolverhampton Wanderers FC', 'awayTeamID': 65, 'awayTeam': 'Manchester City FC', 'score': [1, 3]}, {'season': '2020-2021', 'round': 3, 'date': '26-09-2020', 'matchID': 303786, 'homeTeamID': 397, 'homeTeam': 'Brighton & Hove Albion FC', 'awayTeamID': 66, 'awayTeam': 'Manchester United FC', 'score': [2, 3]}, {'season': '2020-2021', 'round': 3, 'date': '26-09-2020', 'matchID': 303785, 'homeTeamID': 354, 'homeTeam': 'Crystal Palace FC', 'awayTeamID': 62, 'awayTeam': 'Everton FC', 'score': [1, 2]}, {'season': '2020-2021', 'round': 3, 'date': '26-09-2020', 'matchID': 303781, 'homeTeamID': 74, 'homeTeam': 'West Bromwich Albion FC', 'awayTeamID': 61, 'awayTeam': 'Chelsea FC', 'score': [3, 3]}, {'season': '2020-2021', 'round': 3, 'date': '26-09-2020', 'matchID': 303783, 'homeTeamID': 328, 'homeTeam': 'Burnley FC', 'awayTeamID': 340, 'awayTeam': 'Southampton FC', 'score': [0, 1]}, {'season': '2020-2021', 'round': 3, 'date': '27-09-2020', 'matchID': 303782, 'homeTeamID': 356, 'homeTeam': 'Sheffield United FC', 'awayTeamID': 341, 'awayTeam': 'Leeds United FC', 'score': [0, 1]}, {'season': '2020-2021', 'round': 3, 'date': '27-09-2020', 'matchID': 303780, 'homeTeamID': 73, 'homeTeam': 'Tottenham Hotspur FC', 'awayTeamID': 67, 'awayTeam': 'Newcastle United FC', 'score': [1, 1]}, {'season': '2020-2021', 'round': 3, 'date': '27-09-2020', 'matchID': 303779, 'homeTeamID': 65, 'homeTeam': 'Manchester City FC', 'awayTeamID': 338, 'awayTeam': 'Leicester City FC', 'score': [2, 5]}, {'season': '2020-2021', 'round': 3, 'date': '27-09-2020', 'matchID': 303784, 'homeTeamID': 563, 'homeTeam': 'West Ham United FC', 'awayTeamID': 76, 'awayTeam': 'Wolverhampton Wanderers FC', 'score': [4, 0]}, {'season': '2020-2021', 'round': 3, 'date': '28-09-2020', 'matchID': 303777, 'homeTeamID': 63, 'homeTeam': 'Fulham FC', 'awayTeamID': 58, 'awayTeam': 'Aston Villa FC', 'score': [0, 3]}, {'season': '2020-2021', 'round': 3, 'date': '28-09-2020', 'matchID': 303778, 'homeTeamID': 64, 'homeTeam': 'Liverpool FC', 'awayTeamID': 57, 'awayTeam': 'Arsenal FC', 'score': [3, 1]}, {'season': '2020-2021', 'round': 4, 'date': '03-10-2020', 'matchID': 303791, 'homeTeamID': 61, 'homeTeam': 'Chelsea FC', 'awayTeamID': 354, 'awayTeam': 'Crystal Palace FC', 'score': [4, 0]}, {'season': '2020-2021', 'round': 4, 'date': '03-10-2020', 'matchID': 303792, 'homeTeamID': 62, 'homeTeam': 'Everton FC', 'awayTeamID': 397, 'awayTeam': 'Brighton & Hove Albion FC', 'score': [4, 2]}, {'season': '2020-2021', 'round': 4, 'date': '03-10-2020', 'matchID': 303795, 'homeTeamID': 341, 'homeTeam': 'Leeds United FC', 'awayTeamID': 65, 'awayTeam': 'Manchester City FC', 'score': [1, 1]}, {'season': '2020-2021', 'round': 4, 'date': '03-10-2020', 'matchID': 303789, 'homeTeamID': 67, 'homeTeam': 'Newcastle United FC', 'awayTeamID': 328, 'awayTeam': 'Burnley FC', 'score': [3, 1]}, {'season': '2020-2021', 'round': 4, 'date': '04-10-2020', 'matchID': 303794, 'homeTeamID': 338, 'homeTeam': 'Leicester City FC', 'awayTeamID': 563, 'awayTeam': 'West Ham United FC', 'score': [0, 3]}, {'season': '2020-2021', 'round': 4, 'date': '04-10-2020', 'matchID': 303796, 'homeTeamID': 340, 'homeTeam': 'Southampton FC', 'awayTeamID': 74, 'awayTeam': 'West Bromwich Albion FC', 'score': [2, 0]}, {'season': '2020-2021', 'round': 4, 'date': '04-10-2020', 'matchID': 303787, 'homeTeamID': 76, 'homeTeam': 'Wolverhampton Wanderers FC', 'awayTeamID': 63, 'awayTeam': 'Fulham FC', 'score': [1, 0]}, {'season': '2020-2021', 'round': 4, 'date': '04-10-2020', 'matchID': 303790, 'homeTeamID': 57, 'homeTeam': 'Arsenal FC', 'awayTeamID': 356, 'awayTeam': 'Sheffield United FC', 'score': [2, 1]}, {'season': '2020-2021', 'round': 4, 'date': '04-10-2020', 'matchID': 303793, 'homeTeamID': 66, 'homeTeam': 'Manchester United FC', 'awayTeamID': 73, 'awayTeam': 'Tottenham Hotspur FC', 'score': [1, 2]}, {'season': '2020-2021', 'round': 4, 'date': '04-10-2020', 'matchID': 303788, 'homeTeamID': 58, 'homeTeam': 'Aston Villa FC', 'awayTeamID': 64, 'awayTeam': 'Liverpool FC', 'score': [None, None]}, {'season': '2020-2021', 'round': 5, 'date': '17-10-2020', 'matchID': 303801, 'homeTeamID': 62, 'homeTeam': 'Everton FC', 'awayTeamID': 64, 'awayTeam': 'Liverpool FC', 'score': [None, None]}, {'season': '2020-2021', 'round': 5, 'date': '17-10-2020', 'matchID': 303798, 'homeTeamID': 67, 'homeTeam': 'Newcastle United FC', 'awayTeamID': 66, 'awayTeam': 'Manchester United FC', 'score': [None, None]}, {'season': '2020-2021', 'round': 5, 'date': '17-10-2020', 'matchID': 303799, 'homeTeamID': 61, 'homeTeam': 'Chelsea FC', 'awayTeamID': 340, 'awayTeam': 'Southampton FC', 'score': [None, None]}, {'season': '2020-2021', 'round': 5, 'date': '17-10-2020', 'matchID': 303802, 'homeTeamID': 74, 'homeTeam': 'West Bromwich Albion FC', 'awayTeamID': 328, 'awayTeam': 'Burnley FC', 'score': [None, None]}, {'season': '2020-2021', 'round': 5, 'date': '17-10-2020', 'matchID': 303803, 'homeTeamID': 356, 'homeTeam': 'Sheffield United FC', 'awayTeamID': 63, 'awayTeam': 'Fulham FC', 'score': [None, None]}, {'season': '2020-2021', 'round': 5, 'date': '17-10-2020', 'matchID': 303804, 'homeTeamID': 338, 'homeTeam': 'Leicester City FC', 'awayTeamID': 58, 'awayTeam': 'Aston Villa FC', 'score': [None, None]}, {'season': '2020-2021', 'round': 5, 'date': '17-10-2020', 'matchID': 303797, 'homeTeamID': 65, 'homeTeam': 'Manchester City FC', 'awayTeamID': 57, 'awayTeam': 'Arsenal FC', 'score': [None, None]}, {'season': '2020-2021', 'round': 5, 'date': '18-10-2020', 'matchID': 303806, 'homeTeamID': 354, 'homeTeam': 'Crystal Palace FC', 'awayTeamID': 397, 'awayTeam': 'Brighton & Hove Albion FC', 'score': [None, None]}, {'season': '2020-2021', 'round': 5, 'date': '18-10-2020', 'matchID': 303800, 'homeTeamID': 73, 'homeTeam': 'Tottenham Hotspur FC', 'awayTeamID': 563, 'awayTeam': 'West Ham United FC', 'score': [None, None]}, {'season': '2020-2021', 'round': 5, 'date': '19-10-2020', 'matchID': 303805, 'homeTeamID': 341, 'homeTeam': 'Leeds United FC', 'awayTeamID': 76, 'awayTeam': 'Wolverhampton Wanderers FC', 'score': [None, None]}]
 points_db = Points.query.filter_by(user_id=User.query.filter_by(username='paula').first().id).all()
-bet_matches = Bets.query.filter_by(user_id=User.query.filter_by(username='paula').first().id).all()
 
-# mostrar resultados
+# partidos y puntos
+round_matches = []
+for match in fixture:
+    for points in points_db:
+        if match['matchID'] == points.match_id:
+            round_matches.append({'round':match['round'],'match':match['matchID'],'points':points.points})
+# agrego partidos
+round_matches.append({'round':5,'match':123456,'points':10})
+round_matches.append({'round':5,'match':654321,'points':5})
 
-# get matches of current and next round
-current_round = [matches for matches in fixture if matches['round'] == up_rounds(fixture)]
-next_round = [matches for matches in fixture if matches['round'] == up_rounds(fixture) + 1]
-show_points = Points.query.filter_by(user_id=User.query.filter_by(username='paula').first().id).all()
+round_points = []
+total_points = 0
+weeks = set([matches['round'] for matches in round_matches])
 
-# show matches of when "next round" becomes "current round"
-points=[]
-if not bet_matches:
-    total = 'no_bets'
-elif datetime.utcnow().date() != datetime.strptime(next_round[0]['date'], '%d-%m-%Y').date():
-    for match in current_round:
-        for score in show_points:
-            for bet in bet_matches:
-                if match['matchID'] == int(str(score.match_id)) and match['matchID'] == int(str(bet.match_id)):
-                    match['bet_local'] = bet.score_home
-                    match['bet_away'] = bet.score_away
-                    if match['score'][0] != None:
-                        match['points'] = score.points
-                        points.append(score.points)
-                    # add none if the match was not played
-                    else:
-                        match['points'] = None
-                        points.append(None)
-    total = sum([num for num in points if isinstance(num,int)])
-else:
-    total = 'closed'
+semana = []
+puntos = []
 
-print(pd.DataFrame(current_round))
+for week in weeks:
+    total_points = 0
+    for row in round_matches:
+        if row['round'] == week:
+            total_points = total_points + row['points']
+    round_points.append({'round':week,'points':total_points})
+    semana.append(week)
+    puntos.append(total_points)
+
+print(round_points)
+
+# import plotly.express as px
+
+# fig = px.scatter(round_points, x="round", y="points")
+# fig.show()
+
+import plotly.graph_objects as go
+
+fig = go.Figure()
+fig.add_trace(go.Scatter(x=semana, y=puntos,
+                    mode='lines+markers',
+                    name='lines+markers'))
+fig.show()
