@@ -38,3 +38,7 @@ ValueError:
     list, numpy array, or pandas Series
 2020-10-07 11:34:14,782 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
 2020-10-07 11:35:49,915 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-07 11:39:25,205 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-07 21:28:13,656 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-07 21:36:05,108 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-07 21:56:13,002 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
