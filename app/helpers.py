@@ -5,7 +5,11 @@ from datetime import datetime
 from app.models import User, Points, Bets
 from app import db
 
+import json
+
+import plotly
 import plotly.graph_objects as go
+import plotly.express as px
 
 api_key = os.environ.get("API_KEY")
 api_header = os.environ.get("API_HEADER")
@@ -142,33 +146,42 @@ def load(all_matches, all_bets):
                         db.session.add(points_match)
                         db.session.commit()
 
-def points_plot(all_matches, username):
+def points_plot(all_matches):
 
-    all_points = Points.query.filter_by(user_id=User.query.filter_by(username=username).first().id).all()
+    user_data = db.session.query(User).join(User.rank).group_by(User.id).all()
 
-    # creates a list of dictionaries with round, match and points
-    round_matches = []
-    for match in all_matches:
-        for points in all_points:
-            if match['matchID'] == points.match_id:
-                round_matches.append({'round':match['round'],'match':match['matchID'],'points':points.points})
-
-    # creates a list of dictionaries with total points per round
     round_points = []
-    weeks = set([matches['round'] for matches in round_matches])
+    for user in user_data:
+        for data in user.rank.all():
+            for match in all_matches:
+                if match['matchID'] == data.match_id:
+                    round_points.append({'name':user.username,
+                        'round':match['round'],
+                        'points':data.points})
 
-    points = []
+    weeks = set([match['round'] for match in round_points])
+    users = [user.username for user in user_data]
 
-    for week in weeks:
-        total_points = 0
-        for row in round_matches:
-            if row['round'] == week:
-                total_points = total_points + row['points']
-        # semana.append(week)
-        points.append(total_points)
-            
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=list(weeks), y=points,
-                        mode='lines+markers',
-                        name='lines+markers'))
-    fig.show()
+    label=[]
+    y=[]
+    x=[]
+    for user in users:
+        for week in weeks:
+            total_points = 0
+            for row in round_points:
+                if row['name'] == user:
+                    if row['round'] == week:
+                        total_points = total_points + row['points']
+            label.append(user)
+            x.append(week)
+            y.append(total_points)
+
+    dic = dict(zip(['usuario','semana','puntos'],[label, x, y]))
+
+    fig = px.line(dic, x="semana", y="puntos", color="usuario",
+                line_group="usuario", hover_name="usuario")
+    fig.update_traces(mode='markers+lines')
+    fig.update_layout(title="Puntaje por semana según usuario")
+
+    chart = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    return chart

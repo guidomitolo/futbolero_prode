@@ -1,4 +1,4 @@
-2020-10-07 11:33:54,631 ERROR: Exception on /user/paula [GET] [in /home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py:1891]
+2020-10-09 16:02:09,529 ERROR: Exception on /user/paula [GET] [in /home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py:1891]
 Traceback (most recent call last):
   File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
     response = self.full_dispatch_request()
@@ -15,30 +15,8 @@ Traceback (most recent call last):
   File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/flask_login/utils.py", line 272, in decorated_view
     return func(*args, **kwargs)
   File "/home/guido/Dropbox/cs50x/final_project/app/routes.py", line 111, in user
-    helpers.points_plot(fixture, username)
-  File "/home/guido/Dropbox/cs50x/final_project/app/helpers.py", line 171, in points_plot
-    fig.add_trace(go.Scatter(x=weeks, y=points,
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/plotly/graph_objs/_scatter.py", line 3122, in __init__
-    self["x"] = _v
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/plotly/basedatatypes.py", line 4019, in __setitem__
-    self._set_prop(prop, value)
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/plotly/basedatatypes.py", line 4337, in _set_prop
-    raise err
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/plotly/basedatatypes.py", line 4332, in _set_prop
-    val = validator.validate_coerce(val)
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/_plotly_utils/basevalidators.py", line 391, in validate_coerce
-    self.raise_invalid_val(v)
-  File "/home/guido/anaconda3/envs/local/lib/python3.8/site-packages/_plotly_utils/basevalidators.py", line 275, in raise_invalid_val
-    raise ValueError(
-ValueError: 
-    Invalid value of type 'builtins.set' received for the 'x' property of scatter
-        Received value: {4}
-
-    The 'x' property is an array that may be specified as a tuple,
-    list, numpy array, or pandas Series
-2020-10-07 11:34:14,782 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
-2020-10-07 11:35:49,915 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
-2020-10-07 11:39:25,205 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
-2020-10-07 21:28:13,656 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
-2020-10-07 21:36:05,108 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
-2020-10-07 21:56:13,002 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+    line_chart=helpers.points_plot(fixture)
+  File "/home/guido/Dropbox/cs50x/final_project/app/helpers.py", line 185, in points_plot
+    chart = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+NameError: name 'plotly' is not defined
+2020-10-09 16:02:36,843 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
