@@ -1,67 +1,67 @@
 {% extends "base.html" %} 
 
 {% block content %}
-    <div class='container' style="margin-top: 40px;">
+    <div class='container' style="margin-top: 40px; margin-bottom: 40px;">
         <h2>Apuestas</h2>
-        <h3>Próxima fecha</h3>
-        <table class="table table-sm">
-            <thead>
-                <tr>
-
-                    <th>Fecha</th>
-                    <th>Local</th>
-                    <th></th>
-                    <th>Goles (L)</th>
-                    <th>Goles (V)</th>
-                    <th></th>
-                    <th>Visitante</th>
-                </tr>
-            </thead>
-            <tbody>
-                <form method="POST" action="" novalidate>
-                {% if form != False %}
-                    {{ form.hidden_tag() }}
-                {% endif %}
-
-                {% for row in range(10) %}
+        <h3>Próxima ronda: semana {{ table[0].round }}</h3>
+        <form method="POST" action="" novalidate>
+            <table class="table table-sm">
+                <thead style="text-align: center;">
                     <tr>
-                        <td>{{ table[row].date }}</td>
-                        <td>{{ table[row].homeTeam }}</td>
-                        <td>
-                            <img src={{ table[row].homelogo }} alt="Lamp" width="32" height="32">
-                        </td>
 
-                        {% if form != False %}
-                            {% if value != False %}
-                            <td>{{ form.bet[row].home(value=value[row].home) }}</td>
-                            <td>{{ form.bet[row].away(value=value[row].away) }}</td>
+                        <th>Fecha</th>
+                        <th>Local</th>
+                        <th></th>
+                        <th>Goles (L)</th>
+                        <th>Goles (V)</th>
+                        <th></th>
+                        <th>Visitante</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if form != False %}
+                        {{ form.hidden_tag() }}
+                    {% endif %}
+
+                    {% for row in range(10) %}
+                        <tr>
+                            <td>{{ table[row].date }}</td>
+                            <td>{{ table[row].homeTeam }}</td>
+                            <td>
+                                <img src={{ table[row].homelogo }} alt="Lamp" width="32" height="32">
+                            </td>
+
+                            {% if form != False %}
+                                {% if value != False %}
+                                <td>{{ form.bet[row].home(value=value[row].home) }}</td>
+                                <td>{{ form.bet[row].away(value=value[row].away) }}</td>
+                                {% else %}
+                                <td>{{ form.bet[row].home(value='-') }}</td>
+                                <td>{{ form.bet[row].away(value='-') }}</td>
+                                {% endif %}
                             {% else %}
-                            <td>{{ form.bet[row].home(value='-') }}</td>
-                            <td>{{ form.bet[row].away(value='-') }}</td>
+                                <td>Cerrado</td>
+                                <td>Cerrado</td>
                             {% endif %}
-                        {% else %}
-                            <td>Cerrado</td>
-                            <td>Cerrado</td>
-                        {% endif %}
-                        <td>
-                            <img src={{ table[row].awaylogo }} alt="Lamp" width="32" height="32">
-                        </td>
-                        <td>{{ table[row].awayTeam }}</td>
-                    </tr>
-                {% endfor %}
-
+                            <td>
+                                <img src={{ table[row].awaylogo }} alt="Lamp" width="32" height="32">
+                            </td>
+                            <td>{{ table[row].awayTeam }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div>
                 {% if form != False %}
-                    <tr>
-                        <td><button>Bet</button></td>
-                        {% if form.bet.errors is defined %}
-                            <div><span style="color: red; position: absolute;">{{ form.bet.errors[-1] }}</span></div>
-                        {% endif %}
-                    </tr>
+                    <button class="btn btn-secondary btn-lg">Bet</button>
+                {% if form.bet.errors is defined %}
+                    <div style="margin-top: 10px;"><span style="color: red;">{{ form.bet.errors[-1] }}</span></div>
+                {% endif %}
+                    </form>
                 {% else %}
                     <td>Las apuestas ya se han cerrado</td>
                 {% endif %}
-                </form>
-            </tbody>
-        </table>
+            </div>
+        </form>
     </div>
 {% endblock %}

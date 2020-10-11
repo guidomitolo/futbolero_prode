@@ -20,3 +20,63 @@ Traceback (most recent call last):
     chart = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 NameError: name 'plotly' is not defined
 2020-10-09 16:02:36,843 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 09:28:49,410 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 10:01:26,595 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 10:02:35,841 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 10:13:56,311 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 10:17:48,563 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 10:27:50,121 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 10:36:03,940 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 11:24:44,804 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 11:26:15,596 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 11:39:12,477 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 11:40:14,632 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 11:50:19,413 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 11:59:28,854 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 12:02:19,023 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 12:18:07,301 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 12:33:02,418 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 12:33:38,652 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 12:38:37,780 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 12:45:15,043 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 12:51:39,232 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 13:03:09,988 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 13:09:40,777 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-10 13:10:25,111 ERROR: Exception on /results [GET] [in /home/guido/anaconda3/envs/local/lib/python3.7/site-packages/flask/app.py:1892]
+Traceback (most recent call last):
+  File "/home/guido/anaconda3/envs/local/lib/python3.7/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/guido/anaconda3/envs/local/lib/python3.7/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/guido/anaconda3/envs/local/lib/python3.7/site-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/guido/anaconda3/envs/local/lib/python3.7/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/home/guido/anaconda3/envs/local/lib/python3.7/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/guido/anaconda3/envs/local/lib/python3.7/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/guido/anaconda3/envs/local/lib/python3.7/site-packages/flask_login/utils.py", line 272, in decorated_view
+    return func(*args, **kwargs)
+  File "/home/guido/Dropbox/cs50x/final_project/app/routes.py", line 262, in results
+    return render_template("results.html", title='Home Page', table=current_round, total=total)
+  File "/home/guido/anaconda3/envs/local/lib/python3.7/site-packages/flask/templating.py", line 138, in render_template
+    ctx.app.jinja_env.get_or_select_template(template_name_or_list),
+  File "/home/guido/anaconda3/envs/local/lib/python3.7/site-packages/jinja2/environment.py", line 930, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+  File "/home/guido/anaconda3/envs/local/lib/python3.7/site-packages/jinja2/environment.py", line 883, in get_template
+    return self._load_template(name, self.make_globals(globals))
+  File "/home/guido/anaconda3/envs/local/lib/python3.7/site-packages/jinja2/environment.py", line 857, in _load_template
+    template = self.loader.load(self, name, globals)
+  File "/home/guido/anaconda3/envs/local/lib/python3.7/site-packages/jinja2/loaders.py", line 127, in load
+    code = environment.compile(source, name, filename)
+  File "/home/guido/anaconda3/envs/local/lib/python3.7/site-packages/jinja2/environment.py", line 638, in compile
+    self.handle_exception(source=source_hint)
+  File "/home/guido/anaconda3/envs/local/lib/python3.7/site-packages/jinja2/environment.py", line 832, in handle_exception
+    reraise(*rewrite_traceback_stack(source=source))
+  File "/home/guido/anaconda3/envs/local/lib/python3.7/site-packages/jinja2/_compat.py", line 28, in reraise
+    raise value.with_traceback(tb)
+  File "/home/guido/Dropbox/cs50x/final_project/app/templates/results.html", line 62, in template
+    {% endfor %}
+jinja2.exceptions.TemplateSyntaxError: Encountered unknown tag 'endfor'. You probably made a nesting mistake. Jinja is expecting this tag, but currently looking for 'endif'. The innermost block that needs to be closed is 'if'.
+2020-10-10 13:10:46,078 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]

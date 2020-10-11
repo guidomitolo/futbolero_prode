@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class='container' style="margin-top: 40px;">
-        <div class="row justify-content-center">
-            <div class="col-sm">
+    <div class='container mx-auto' style="margin-top: 40px; margin-bottom: 40px;">
+        <div class="row justify-content-center mx-auto">
+            <div class="col-sm-5">
                 <table>
                     <tr valign="top">
                         <td><img src="{{ user.avatar(128) }}"></td>
@@ -20,29 +20,31 @@
                         </td>
                     </tr>
                 </table>
-                <h3>Ranking de usuarios</h3>
+                <h3 style="margin-top: 10px">Ranking de usuarios</h3>
                 {% if ranking == false %}
                     <p>Todavía no hay puntos</p>
                 {% else %}
-                <div>
-                    {% for row in ranking %}
-                    <table>
+                <table class='table-striped'>
+                    <thead>
                         <tr>
                             <td>Ranking</td>
                             <td>Nombre</td>
                             <td>Puntos</td>
                         </tr>
+                    </thead>
+                    <body>
+                        {% for row in ranking %}
                         <tr>
                             <td>{{ loop.index }}</td>
                             <td>{{ row.name }}</td>
                             <td><b>{{ row.points }}</b></td>
                         </tr>
-                    </table>
-                    {% endfor %}
-                </div>
+                        {% endfor %}
+                    </body>
+                </table>
                 {% endif %}
             </div>
-            <div class="col-sm">
+            <div class="col-sm-7">
                 <div class="chart" id="bargraph">
                     <script>
                         var graphs = {{ plot | safe}};

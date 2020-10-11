@@ -17,7 +17,7 @@
 
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+        <nav class="navbar navbar-expand-lg navbar-light border" style="background-color: #67b8f1;">
             <a class="navbar-brand abs">
                 <img src="/static/logo.png" width="30" height="30" class="d-inline-block align-top" loading="lazy">
                 FUTBOLERO
@@ -86,5 +86,8 @@
                 {% endwith %}
         </div>
         {% block content %}{% endblock %}
+        <footer class="small text-center text-muted" style="margin-bottom: 40px;">
+            Información provista por <a href="https://www.football-data.org/">football-data.org</a>. <a href="https://www.football-data.org/about">Términos y condiciones</a>.
+        </footer>
     </body>
 </html>

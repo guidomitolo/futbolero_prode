@@ -5,81 +5,75 @@
         <h1>¡Hola {{ current_user.username }}!</h1>
         <h3>Temporada {{ fixture[0].season }}</h3>
         <h3>Semana {{ fixture[0].round }}</h3>
-        <div class="row justify-content-center">
-            <div class="col-sm">
-                <table class="table table-sm">
-                    <h2>Fecha en juego</h2>
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Local</th>
-                            <th></th>
-                            <th>Resultado</th>
-                            <th></th>
-                            <th>Visitante</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for row in fixture %}
-                        <tr>
-                            <td>{{ row.date }}</td>
-                            <td align="right">{{ row.homeTeam }}</td>
-                            <td>
-                                <img src={{ row.homelogo }} alt="Lamp" width="32" height="32">
-                            </td>
-                            {% if row.score[0] == None %}
-                            <td align="center">Pendiente</td>
-                            {% else %}
-                            <td align="center">{{ row.score }}</td>
-                            {% endif %}
-                            <td>
-                                <img src={{ row.awaylogo }} alt="Lamp" width="32" height="32">
-                            </td>
-                            <td>{{ row.awayTeam }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-sm">
-                <table class="table table-sm">
-                    <h2>Tabla de posiciones</h2>
-                    <thead>
-                        <tr>
-                            <th>Posición</th>
-                            <th></th>
-                            <th>Equipo</th>
-                            <th>Puntos</th>
-                            <th>PJ</th>
-                            <th>PG</th>
-                            <th>PE</th>
-                            <th>PP</th>
-                            <th>GA</th>
-                            <th>GC</th>
-                            <th>DG</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for row in table %}
-                        <tr>
-                            <td>{{ row.standing }}</td>
-                            <td>
-                                <img src={{ row.teamlogo }} alt="Lamp" width="32" height="32">
-                            </td>
-                            <td>{{ row.team }}</td>
-                            <td>{{ row.points }}</td>
-                            <td>{{ row.PG }}</td>
-                            <td>{{ row.Wons }}</td>
-                            <td>{{ row.Draws }}</td>
-                            <td>{{ row.Loses }}</td>
-                            <td>{{ row.goals }}</td>
-                            <td>{{ row.goals_against }}</td>
-                            <td>{{ row.goals_diff }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div> 
+        <table class="table table-sm">
+            <h2>Fecha en juego</h2>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Local</th>
+                    <th></th>
+                    <th>Resultado</th>
+                    <th></th>
+                    <th>Visitante</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for row in fixture %}
+                <tr>
+                    <td>{{ row.date }}</td>
+                    <td align="right">{{ row.homeTeam }}</td>
+                    <td>
+                        <img src={{ row.homelogo }} alt="Lamp" width="32" height="32">
+                    </td>
+                    {% if row.score[0] == None %}
+                    <td align="center">Pendiente</td>
+                    {% else %}
+                    <td align="center">{{ row.score }}</td>
+                    {% endif %}
+                    <td>
+                        <img src={{ row.awaylogo }} alt="Lamp" width="32" height="32">
+                    </td>
+                    <td>{{ row.awayTeam }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <table class="table table-sm">
+            <h2>Tabla de posiciones</h2>
+            <thead>
+                <tr>
+                    <th>Posición</th>
+                    <th></th>
+                    <th>Equipo</th>
+                    <th>Puntos</th>
+                    <th>PJ</th>
+                    <th>PG</th>
+                    <th>PE</th>
+                    <th>PP</th>
+                    <th>GA</th>
+                    <th>GC</th>
+                    <th>DG</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for row in table %}
+                <tr>
+                    <td>{{ row.standing }}</td>
+                    <td>
+                        <img src={{ row.teamlogo }} alt="Lamp" width="32" height="32">
+                    </td>
+                    <td>{{ row.team }}</td>
+                    <td>{{ row.points }}</td>
+                    <td>{{ row.PG }}</td>
+                    <td>{{ row.Wons }}</td>
+                    <td>{{ row.Draws }}</td>
+                    <td>{{ row.Loses }}</td>
+                    <td>{{ row.goals }}</td>
+                    <td>{{ row.goals_against }}</td>
+                    <td>{{ row.goals_diff }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock %}

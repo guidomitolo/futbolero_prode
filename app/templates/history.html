@@ -2,8 +2,9 @@
 
 {% block content %}
     <div class='container' style="margin-top: 40px; margin-bottom: 40px;">
+        <h2>Registro de apuestas y puntos</h2>
         {% if history is defined %}
-            <table class='table-striped' >
+            <table class='table-striped' style="margin-top:20px; text-align: center;">
                 <thead>
                     <tr>
                         <th>Fecha</th>
@@ -26,12 +27,12 @@
                             <td>{{ row.awayTeam }}</td>
                             <td align="center">{{ row.score_away }}</td>
                             <td align="center">{{ row.bet_away }}</td>
-                            <td>{{ row.points }}</td>
+                            <td><b>{{ row.points }}</b></td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            {% else %}
+        {% else %}
             <p>No hay apuestas</p>
         {% endif %}
     </div>

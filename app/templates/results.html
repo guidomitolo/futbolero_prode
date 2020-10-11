@@ -1,16 +1,16 @@
 {% extends "base.html" %} 
 
 {% block content %}
-    <div class='container' style="margin-top: 40px;">
+    <div class='container' style="margin-top: 40px; margin-bottom: 40px;">
         <h2>Puntos</h2>
         {% if total == 'closed' %}
             <p>Fecha cerrada</p>
         {% elif total == 'no_bets' %}
             <p>No haya apuestas</p>
         {% else %}
-            <h3>Próxima fecha</h3>
+            <h3>Semana {{ table[0].round }}</h3>
             <table class="table table-sm">
-                <thead>                
+                <thead style="text-align: center;">                
                     <tr>
                         <th>Fecha</th>
                         <th>Local</th>
@@ -37,8 +37,8 @@
                             {% else %}
                                 <td align="center">{{ row.score[0] }}</td>
                             {% endif %}
-                            <td align="center">{{ row.bet_local}}</td>
-                            <td>{{ row.awayTeam }}</td>
+                            <td align="center"><b>{{ row.bet_local}}</b></td>
+                            <td align="right">{{ row.awayTeam }}</td>
                             <td>
                                 <img src={{ row.awaylogo }} alt="Lamp" width="32" height="32">
                             </td>
@@ -47,18 +47,26 @@
                             {% else %}
                                 <td align="center">{{ row.score[1] }}</td>
                             {% endif %}
-                            <td align="center">{{ row.bet_away }}</td>
+                            <td align="center"><b>{{ row.bet_away }}</b></td>
                             {% if row.score[0] == None %}
-                                <td>Sin Puntuar</td>
+                                <td align="center">Sin Puntuar</td>
                             {% else %}
-                                <td>{{ row.points }}</td>
+                                {% if row.points == 6 %}
+                                    <td style='background-color: green;' align="center"><b>{{ row.points }}</b></td>
+                                {% elif row.points == 3 %}
+                                    <td style='background-color:yellow;' align="center"><b>{{ row.points }}</b></td>
+                                {% else %}
+                                    <td align="center"><b>{{ row.points }}</b></td>
+                                {% endif %}
                             {% endif %}
                         </tr>
                     {% endfor %}
-                    <tr>
-                        <td>TOTAL</td>
-                        <td><b></b>{{ total }}</b></td>
-                    </tr>
+                    <tfoot>
+                        <tr>
+                            <td><h4><b>TOTAL</b></h4></td>
+                            <td colspan="11" align="right"><h4><b>{{ total }}</b></h4></td>
+                        </tr>
+                    </tfoot>
                 </tbody>
             </table>
         {% endif %}
