@@ -69,3 +69,6 @@ NameError: name 'annotations' is not defined
 2020-10-12 13:43:38,684 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
 2020-10-12 13:43:53,198 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
 2020-10-12 13:46:23,292 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-12 13:55:20,252 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-12 14:11:28,837 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]
+2020-10-12 14:17:55,276 INFO: Futbolero startup [in /home/guido/Dropbox/cs50x/final_project/app/__init__.py:42]

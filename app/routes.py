@@ -89,7 +89,7 @@ def register():
 
         flash('Felicitaciones, usted se ha registrado exitosamente!')
         return redirect(url_for('login'))
-    return render_template('register.html', title='Register', form=form)
+    return render_template('register.html', title='Registrarse', form=form)
 
 @app.route('/user/<username>')
 @login_required
@@ -164,7 +164,7 @@ def edit_profile():
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.fav_squad.data = current_user.fav_squad
-    return render_template('edit_profile.html', title='Edit Profile', form=form)
+    return render_template('edit_profile.html', title='Editar Perfil', form=form)
 
 @app.route('/bet', methods=['GET', 'POST'])
 @login_required
@@ -232,8 +232,9 @@ def bet():
                             db.session.add(new_bet)
                             db.session.commit()
                 flash('Has enviado una apuesta')
+                return redirect(url_for('bet'))
 
-    return render_template("bet.html", title='Home Page', table=next_round, form=form, value=last)
+    return render_template("bet.html", title='Apostar', table=next_round, form=form, value=last)
 
 @app.route('/results', methods=['GET', 'POST'])
 @login_required
@@ -284,4 +285,4 @@ def results():
         else:
             total = 'closed'
 
-    return render_template("results.html", title='Home Page', table=current_round, total=total)
+    return render_template("results.html", title='Puntos', table=current_round, total=total)
