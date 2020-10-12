@@ -1,13 +1,15 @@
 {% extends "base.html" %} 
 
 {% block content %}
-    <div class='container' style="margin-top: 40px; margin-bottom: 40px;">
-        <h1>¡Hola {{ current_user.username }}!</h1>
-        <h3>Temporada {{ fixture[0].season }}</h3>
-        <h3>Semana {{ fixture[0].round }}</h3>
+    <h1>¡Hola {{ current_user.username }}!</h1>
+    <h3>Temporada {{ fixture[0].season }}</h3>
+    <h3>Semana {{ fixture[0].round }}</h3>
+    {% if fixture == False %}
+        <h2>La temporado ha finalizado</h2>
+    {% else %}
         <table class="table table-sm">
             <h2>Fecha en juego</h2>
-            <thead>
+            <thead style="text-align: center;">
                 <tr>
                     <th>Fecha</th>
                     <th>Local</th>
@@ -20,7 +22,7 @@
             <tbody>
             {% for row in fixture %}
                 <tr>
-                    <td>{{ row.date }}</td>
+                    <td align="center">{{ row.date }}</td>
                     <td align="right">{{ row.homeTeam }}</td>
                     <td>
                         <img src={{ row.homelogo }} alt="Lamp" width="32" height="32">
@@ -30,7 +32,7 @@
                     {% else %}
                     <td align="center">{{ row.score }}</td>
                     {% endif %}
-                    <td>
+                    <td align="right">
                         <img src={{ row.awaylogo }} alt="Lamp" width="32" height="32">
                     </td>
                     <td>{{ row.awayTeam }}</td>
@@ -38,42 +40,41 @@
             {% endfor %}
             </tbody>
         </table>
-        <table class="table table-sm">
-            <h2>Tabla de posiciones</h2>
-            <thead>
-                <tr>
-                    <th>Posición</th>
-                    <th></th>
-                    <th>Equipo</th>
-                    <th>Puntos</th>
-                    <th>PJ</th>
-                    <th>PG</th>
-                    <th>PE</th>
-                    <th>PP</th>
-                    <th>GA</th>
-                    <th>GC</th>
-                    <th>DG</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for row in table %}
-                <tr>
-                    <td>{{ row.standing }}</td>
-                    <td>
-                        <img src={{ row.teamlogo }} alt="Lamp" width="32" height="32">
-                    </td>
-                    <td>{{ row.team }}</td>
-                    <td>{{ row.points }}</td>
-                    <td>{{ row.PG }}</td>
-                    <td>{{ row.Wons }}</td>
-                    <td>{{ row.Draws }}</td>
-                    <td>{{ row.Loses }}</td>
-                    <td>{{ row.goals }}</td>
-                    <td>{{ row.goals_against }}</td>
-                    <td>{{ row.goals_diff }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+    {% endif %}
+    <table class="table table-sm">
+        <h2>Tabla de posiciones</h2>
+        <thead align="center">
+            <tr>
+                <th>Posición</th>
+                <th colspan="2">Equipo</th>
+                <th>Puntos</th>
+                <th>PJ</th>
+                <th>PG</th>
+                <th>PE</th>
+                <th>PP</th>
+                <th>GA</th>
+                <th>GC</th>
+                <th>DG</th>
+            </tr>
+        </thead>
+        <tbody align="center">
+        {% for row in table %}
+            <tr>
+                <td>{{ row.standing }}</td>
+                <td align="right">{{ row.team }}</td>
+                <td>
+                    <img src={{ row.teamlogo }} alt="Lamp" width="32" height="32">
+                </td>
+                <td>{{ row.points }}</td>
+                <td>{{ row.PG }}</td>
+                <td>{{ row.Wons }}</td>
+                <td>{{ row.Draws }}</td>
+                <td>{{ row.Loses }}</td>
+                <td>{{ row.goals }}</td>
+                <td>{{ row.goals_against }}</td>
+                <td>{{ row.goals_diff }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

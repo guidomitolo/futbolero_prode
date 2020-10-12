@@ -1,39 +1,37 @@
 {% extends "base.html" %} 
 
 {% block content %}
-    <div class='container' style="margin-top: 40px; margin-bottom: 40px;">
-        <h2>Registro de apuestas y puntos</h2>
-        {% if history is defined %}
-            <table class='table-striped' style="margin-top:20px; text-align: center;">
-                <thead>
+    <h2>Registro de apuestas y puntos</h2>
+    {% if history is defined %}
+        <table class='table table-striped' style="margin-top:20px; text-align: center; line-height: 14px;">
+            <thead style="vertical-align: middle;">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Local</th>
+                    <th>Goles<br>Local</th>
+                    <th>Apuesta<br>Local</th>
+                    <th>Visitante</th>
+                    <th>Goles<br>Visitante</th>
+                    <th>Apuesta<br>Visitante</th>
+                    <th>Puntos</th>
+                </tr>
+            </thead>
+            <tbody>    
+                {% for row in history %}
                     <tr>
-                        <th>Fecha</th>
-                        <th>Local</th>
-                        <th>Goles<br>Local</th>
-                        <th>Apuesta<br>Local</th>
-                        <th>Visitante</th>
-                        <th>Goles<br>Visitante</th>
-                        <th>Apuesta<br>Visitante</th>
-                        <th>Puntos</th>
+                        <td>{{ row.round }}</td>
+                        <td align="right">{{ row.homeTeam }}</td>
+                        <td align="center">{{ row.score_home }}</td>
+                        <td align="center">{{ row.bet_local}}</td>
+                        <td>{{ row.awayTeam }}</td>
+                        <td align="center">{{ row.score_away }}</td>
+                        <td align="center">{{ row.bet_away }}</td>
+                        <td><b>{{ row.points }}</b></td>
                     </tr>
-                </thead>
-                <tbody>    
-                    {% for row in history %}
-                        <tr>
-                            <td>{{ row.round }}</td>
-                            <td align="right">{{ row.homeTeam }}</td>
-                            <td align="center">{{ row.score_home }}</td>
-                            <td align="center">{{ row.bet_local}}</td>
-                            <td>{{ row.awayTeam }}</td>
-                            <td align="center">{{ row.score_away }}</td>
-                            <td align="center">{{ row.bet_away }}</td>
-                            <td><b>{{ row.points }}</b></td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p>No hay apuestas</p>
-        {% endif %}
-    </div>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay apuestas</p>
+    {% endif %}
 {% endblock %}

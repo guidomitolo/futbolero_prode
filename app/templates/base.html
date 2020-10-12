@@ -8,31 +8,29 @@
         {% endif %}
         {{ moment.include_jquery() }}
         {{ moment.include_moment() }}
+        <link href="/static/soccer.ico" rel="icon">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
-
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-light border" style="background-color: #67b8f1;">
+        <nav class="navbar navbar-expand-md navbar-dark primary-color" style="background-color: #67b8f1;">
             <a class="navbar-brand abs">
                 <img src="/static/logo.png" width="30" height="30" class="d-inline-block align-top" loading="lazy">
-                FUTBOLERO
+                <span class="blue"><b>FUTBOLERO</b></span>
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsingNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="navbar-collapse collapse" id="collapsingNavbar">
+            <div class="navbar-collapse collapse" id="navbar">
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('index') }}">Inicio</a>
                     </li>
-                </ul>
                 {% if current_user.is_anonymous %}
-                <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('login') }}">
                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-in-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -50,11 +48,18 @@
                             Registrarse
                         </a>
                     </li>  
-                </ul>
                 {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('bet') }}">Apostar</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('results') }}">Puntos</a></li>                    
+                </ul>
                 <ul class="navbar-nav ml-auto">
+                    {% if user == current_user %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('edit_profile') }}">Editar perfil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('history', username=current_user.username) }}">Historial</a></li>
+                    {% endif %}
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('user', username=current_user.username) }}">Perfil</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">
                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-left" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z"/>
                                 <path fill-rule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
@@ -63,16 +68,6 @@
                         </a>
                     </li>
                 </ul>
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('bet') }}">Apostar</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('results') }}">Puntos</a></li>                    
-                </ul>
-                {% endif %}
-                {% if user == current_user %}
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('edit_profile') }}">Editar perfil</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('history', username=current_user.username) }}">Historial</a></li>
-                    </ul>
                 {% endif %}
             </div>
         </nav>
@@ -85,7 +80,9 @@
                 {% endif %}
                 {% endwith %}
         </div>
+        <main class ='container' class='container' style="margin-top: 40px; margin-bottom: 40px;">
         {% block content %}{% endblock %}
+        </main>
         <footer class="small text-center text-muted" style="margin-bottom: 40px;">
             Información provista por <a href="https://www.football-data.org/">football-data.org</a>. <a href="https://www.football-data.org/about">Términos y condiciones</a>.
         </footer>

@@ -1,14 +1,15 @@
 {% extends "base.html" %} 
 
 {% block content %}
-    <div class='container' style="margin-top: 40px; margin-bottom: 40px;">
-        <h2>Apuestas</h2>
+    <h2>Apuestas</h2>
+    {% if table == False %}
+        <h3>El campeonato ha finalizado</h3>
+    {% else %}
         <h3>Próxima ronda: semana {{ table[0].round }}</h3>
         <form method="POST" action="" novalidate>
             <table class="table table-sm">
                 <thead style="text-align: center;">
                     <tr>
-
                         <th>Fecha</th>
                         <th>Local</th>
                         <th></th>
@@ -25,19 +26,19 @@
 
                     {% for row in range(10) %}
                         <tr>
-                            <td>{{ table[row].date }}</td>
-                            <td>{{ table[row].homeTeam }}</td>
+                            <td style="text-align: center;">{{ table[row].date }}</td>
+                            <td style="text-align:right;">{{ table[row].homeTeam }}</td>
                             <td>
                                 <img src={{ table[row].homelogo }} alt="Lamp" width="32" height="32">
                             </td>
 
                             {% if form != False %}
                                 {% if value != False %}
-                                <td>{{ form.bet[row].home(value=value[row].home) }}</td>
-                                <td>{{ form.bet[row].away(value=value[row].away) }}</td>
+                                <td style="text-align: center;">{{ form.bet[row].home(value=value[row].home, size=2) }}</td>
+                                <td style="text-align: center;">{{ form.bet[row].away(value=value[row].away, size=2) }}</td>
                                 {% else %}
-                                <td>{{ form.bet[row].home(value='-') }}</td>
-                                <td>{{ form.bet[row].away(value='-') }}</td>
+                                <td style="text-align: center;">{{ form.bet[row].home(value='-', size=2) }}</td>
+                                <td style="text-align: center;">{{ form.bet[row].away(value='-', size=2) }}</td>
                                 {% endif %}
                             {% else %}
                                 <td>Cerrado</td>
@@ -63,5 +64,5 @@
                 {% endif %}
             </div>
         </form>
-    </div>
+    {% endif %}
 {% endblock %}

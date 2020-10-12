@@ -113,6 +113,12 @@ def team(league):
     except (KeyError, TypeError, ValueError):
         return None
 
+def season_end(all_matches):
+
+    # if True, the season is ended
+    all_played = [match['score'][0] for match in all_matches]
+    return None not in all_played    
+
 def up_rounds(all_matches):
     rounds = [matches['round'] for matches in all_matches if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
     return max(rounds)
@@ -181,7 +187,31 @@ def points_plot(all_matches):
     fig = px.line(dic, x="semana", y="puntos", color="usuario",
                 line_group="usuario", hover_name="usuario")
     fig.update_traces(mode='markers+lines')
-    fig.update_layout(title="Puntaje por semana según usuario")
+    fig.update_layout(font_family="Helvetica")
 
     chart = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    
     return chart
+
+def notify(username, user_points):
+
+    import smtplib
+    import base64
+
+    user = User.query.filter_by(username=username).first()
+
+    adm_mail = os.environ.get("ADM_MAIL")
+    adm_pass = os.environ.get("ADM_PASS")
+
+    with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
+        smtp.ehlo()
+        smtp.starttls()
+        smtp.ehlo()
+
+        smtp.login(adm_mail, adm_pass)
+
+        subject='USUARIO CAMPEON - PERMIER LEAGUE 2020-2021 - FUTBOLERO'
+        body = f'Estimado/a {username},\n\nHa ganado el campeonato de apuestas con {user_points} puntos. Nos estaremos comunicando a la brevedad para coordinar la entrega de un premio sorpresa.\n\nSaluda atte.\n\nFUTBOLERO - PRODE'
+        msg = f'{subject}\n\n{body}'
+
+        smtp.sendmail(adm_mail, f"{user.email}", msg)
