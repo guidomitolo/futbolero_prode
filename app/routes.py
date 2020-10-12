@@ -48,6 +48,7 @@ def login():
 
     form = LoginForm()
 
+    # check submitted form
     if form.validate_on_submit():
 
         user = User.query.filter_by(username=form.username.data).first() 
@@ -78,6 +79,8 @@ def register():
         return redirect(url_for('index'))
     
     form = RegistrationForm()
+
+    # check submitted form
     if form.validate_on_submit():
 
         user = User(username=form.username.data, email=form.email.data)
@@ -89,6 +92,7 @@ def register():
 
         flash('Felicitaciones, usted se ha registrado exitosamente!')
         return redirect(url_for('login'))
+
     return render_template('register.html', title='Registrarse', form=form)
 
 @app.route('/user/<username>')
@@ -99,6 +103,7 @@ def user(username):
     users = User.query.all()
     users_points = db.session.query(Points.user_id, db.func.sum(Points.points).label('sum')).group_by(Points.user_id).order_by(desc('sum')).all()
 
+    # prepare ranking
     ranking = []
     if users_points:
         for row in range(len(users_points)):
@@ -111,6 +116,7 @@ def user(username):
     if username == ranking[0]['name']:
         flash('Felicitaciones, vas ganando!')
 
+    # make a line chart with the users points of each round
     line_chart=helpers.points_plot(fixture)
 
     return render_template('user.html',
@@ -123,6 +129,7 @@ def user(username):
 @login_required
 def history(username):
 
+    # make table with all the data available (matches, points, bets)
     points_db = Points.query.filter_by(user_id=User.query.filter_by(username=username).first().id).all()
     bet_matches = Bets.query.filter_by(user_id=User.query.filter_by(username=username).first().id).all()
 
@@ -145,15 +152,18 @@ def history(username):
 
 @app.before_request
 def before_request():
+
+    # current_user reference -> Flask-Login will invoke the user loader callback function, 
+    # which will run a database query that will put the target user in the database session
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow() 
-        # when you reference current_user, Flask-Login will invoke the user loader callback function, 
-        # which will run a database query that will put the target user in the database session
         db.session.commit()
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
+
+    # let the user change username and choose squad
     form = EditProfileForm(current_user.username)
     if form.validate_on_submit():
         current_user.username = form.username.data
@@ -172,12 +182,12 @@ def bet():
 
     # get matches of next round
     next_round = [matches for matches in fixture if matches['round'] == helpers.up_rounds(fixture) + 1]
-    # access to Bets database
-    bet_matches = Bets.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
+    
     # make list of matches in bets
+    bet_matches = Bets.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
     bet_list = [int(str(bet)) for bet in bet_matches]
 
-    # get matches of next round if season is on track
+    # get matches of next round if season is active
     # if one matchID exists, all other matches of the same round exist as well. 
     # then, make a list to pass as value of each form
     if helpers.season_end(fixture) == True:
@@ -240,7 +250,11 @@ def bet():
 @login_required
 def results():
 
+    # load bets and compare with matches scores
+    helpers.load(fixture, Bets.query.all())
+
     # check if the tournament is over and send email to winner
+    # else, load bets and points to show to the user
     if helpers.season_end(fixture) == True:
         current_round = False
 
@@ -257,8 +271,6 @@ def results():
         helpers.notify(ranking[0]['name'], ranking[0]['points'])
     
     else:
-        helpers.load(fixture, Bets.query.all())
-
         show_points = Points.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
 
         # get matches of current and next round
@@ -267,6 +279,8 @@ def results():
 
         user_bets = Bets.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
 
+        # if new user with no bets, nothing will be loaded
+        # once the round is over, the next round will be loaded
         total = 0
         if not user_bets:
             total = 'no_bets'

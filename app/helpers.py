@@ -64,6 +64,8 @@ def fixture(league, season):
         return None
 
 def standings(league, season):
+    
+    # Contact API
     try:
         URL = f"https://api.football-data.org/v2/competitions/{league}/standings?season={season}"
         response = requests.get(url = URL, headers = headers) 
@@ -71,6 +73,7 @@ def standings(league, season):
     except requests.RequestException:
         return None
 
+    # Parse response
     try:
         query = response.json()
         standings = []
@@ -120,10 +123,14 @@ def season_end(all_matches):
     return None not in all_played    
 
 def up_rounds(all_matches):
+
+    # get the current round
     rounds = [matches['round'] for matches in all_matches if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
     return max(rounds)
 
 def score(bet_home, score_home, bet_away, score_away):
+
+    # give points
     if bet_home == score_home and bet_away == score_away:
         return 6
     elif bet_home > bet_away and score_home > score_away:
@@ -137,6 +144,7 @@ def score(bet_home, score_home, bet_away, score_away):
 
 def load(all_matches, all_bets):
 
+    # load points in database
     points_db = Points.query.all()
     points_recorded = [(score.user_id,score.match_id)  for score in points_db]
     bets_recorded = [(score.user_id,score.match_id) for score in all_bets]

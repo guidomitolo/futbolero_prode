@@ -23,6 +23,7 @@ class User(UserMixin, db.Model):
     fav_squad = db.Column(db.String(128))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
 
+    # db relationship lets the user db be connected with the other dbs
     rank = db.relationship('Points', backref='user_points', lazy='dynamic')
 
     bet = db.relationship('Bets', lazy='dynamic')
