@@ -1,132 +1,27 @@
-import requests
-import os
 from datetime import datetime
 
-from app.models import User, Points, Bets
+import app
+from app.models import User, Points
 from app import db
 
 import json
 
 import plotly
-import plotly.graph_objects as go
 import plotly.express as px
 
-api_key = os.environ.get("API_KEY")
-api_header = os.environ.get("API_HEADER")
-
-headers = { api_header: api_key }
-
-def logo(league, team):
-
-    # Contact API
-    try:
-        URL = f"http://api.football-data.org/v2/competitions/{league}/teams"
-        response = requests.get(url = URL, headers = headers) 
-        response.raise_for_status()
-    except requests.RequestException:
-        return None
-
-    # Parse response
-    try:
-        query = response.json()
-        for squad in query['teams']:
-            if squad['name'] == team:
-                return squad["crestUrl"]
-    except (KeyError, TypeError, ValueError):
-        return None
-
-def fixture(league, season):
-
-    # Contact API
-    try:
-        URL = f"https://api.football-data.org/v2/competitions/{league}/matches?season={season}"
-        response = requests.get(url = URL, headers = headers) 
-        response.raise_for_status()
-    except requests.RequestException:
-        return None
-
-    # Parse response
-    try:
-        query = response.json()
-        matches = []
-        for match in query['matches']:
-            matches.append({'season':f'{season}-{str(int(season)+1)}',
-            'round':match['matchday'],
-            'date': datetime.strptime(match['utcDate'][0:10], '%Y-%m-%d').strftime('%d-%m-%Y'),
-            'matchID': match['id'],
-            'homeTeamID': match['homeTeam']['id'],
-            'homeTeam': match['homeTeam']['name'],
-            'awayTeamID': match['awayTeam']['id'],
-            'awayTeam': match['awayTeam']['name'],
-            'score': [match['score']['fullTime']['homeTeam'],match['score']['fullTime']['awayTeam']]})
-        return matches
-    except (KeyError, TypeError, ValueError):
-        return None
-
-def standings(league, season):
-    
-    # Contact API
-    try:
-        URL = f"https://api.football-data.org/v2/competitions/{league}/standings?season={season}"
-        response = requests.get(url = URL, headers = headers) 
-        response.raise_for_status()
-    except requests.RequestException:
-        return None
-
-    # Parse response
-    try:
-        query = response.json()
-        standings = []
-        logos = []
-        for standing in query['standings'][0]['table']:
-            standings.append({'season':f'{season}-{str(int(season)+1)}',
-                    'standing': standing['position'],
-                    'team': standing['team']['name'],
-                    'teamlogo': standing['team']["crestUrl"],
-                    'points': standing['points'],
-                    'PG': standing["playedGames"],
-                    'Wons': standing["won"],
-                    'Draws': standing["draw"],
-                    'Loses': standing["lost"],
-                    'goals': standing["goalsFor"],
-                    'goals_against': standing["goalsAgainst"],
-                    'goals_diff': standing["goalDifference"]})
-            logos.append({'team': standing['team']['name'],'teamlogo': standing['team']["crestUrl"]})
-        return standings, logos
-    except (KeyError, TypeError, ValueError):
-        return None
-
-def team(league):
-
-    # Contact API
-    try:
-        URL = f"http://api.football-data.org/v2/competitions/{league}/teams"
-        response = requests.get(url = URL, headers = headers) 
-        response.raise_for_status()
-    except requests.RequestException:
-        return None
-
-    # Parse response
-    try:
-        query = response.json()
-        teams = []
-        for squad in query['teams']:
-            teams.append(squad["name"])
-        return teams
-    except (KeyError, TypeError, ValueError):
-        return None
 
 def season_end(all_matches):
-
-    # if True, the season is ended
+    # check if all matches have any scores. If any score missing, return False
     all_played = [match['score'][0] for match in all_matches]
     return None not in all_played    
+
 
 def up_rounds(all_matches):
 
     # get the current round
     rounds = [matches['round'] for matches in all_matches if datetime.strptime(matches['date'], '%d-%m-%Y').date() <= datetime.utcnow().date()]
     return max(rounds)
+
 
 def score(bet_home, score_home, bet_away, score_away):
 
@@ -141,6 +36,7 @@ def score(bet_home, score_home, bet_away, score_away):
         return 3
     else:
         return 0
+
 
 def load(all_matches, all_bets):
 
@@ -159,6 +55,7 @@ def load(all_matches, all_bets):
                         points= score(int(str(bet.score_home)), match['score'][0], int(str(bet.score_away)), match['score'][1]))
                         db.session.add(points_match)
                         db.session.commit()
+
 
 def points_plot(all_matches):
 
@@ -201,6 +98,7 @@ def points_plot(all_matches):
     
     return chart
 
+
 def notify(username, user_points):
 
     import smtplib
@@ -208,8 +106,10 @@ def notify(username, user_points):
 
     user = User.query.filter_by(username=username).first()
 
-    adm_mail = os.environ.get("ADM_MAIL")
-    adm_pass = os.environ.get("ADM_PASS")
+    # adm_mail = os.environ.get("ADM_MAIL")
+    # adm_pass = os.environ.get("ADM_PASS")
+    adm_mail = app.config("ADM_MAIL")
+    adm_pass = app.config("ADM_PASS")
 
     with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
         smtp.ehlo()

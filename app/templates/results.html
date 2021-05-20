@@ -19,9 +19,12 @@
         {% if total == 'closed' %}
             <p>Fecha cerrada</p>
         {% elif total == 'no_bets' %}
-            <p>No haya apuestas</p>
+            <p>No hubo apuestas para la semana {{ table[0].round }}</p>
         {% else %}
-            <h3>Semana {{ table[0].round }}</h3>
+            <div>
+                <h3>Semana {{ table[0].round }}</h3>
+                <small>Terminada</small>
+            </div>
             <table class="table table-sm">
                 <thead style="text-align: center;">                
                     <tr>

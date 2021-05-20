@@ -3,7 +3,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextA
 from wtforms import FormField, FieldList, IntegerField, Form
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length, NumberRange, InputRequired
 from app.models import User
-from app import helpers
+from app import connect
 
 class LoginForm(FlaskForm):
 
@@ -33,7 +33,7 @@ class RegistrationForm(FlaskForm):
 class EditProfileForm(FlaskForm):
     
     username = StringField('Nombre de usuario', validators=[DataRequired()])
-    fav_squad = SelectField('Fav\' Squad',choices=helpers.team('PL'))
+    fav_squad = SelectField('Fav\' Squad', choices=connect.team('PL'))
     submit = SubmitField('Guardar')
 
     # constructor to check if the user is logged

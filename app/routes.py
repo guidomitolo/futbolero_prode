@@ -1,16 +1,21 @@
-from flask import render_template, flash, redirect, url_for
-from app import app, helpers
-from app.forms import LoginForm, RegistrationForm
+# flask core libs
+from flask import render_template, flash, redirect, url_for, session
 from flask_login import current_user, login_user, logout_user, login_required
+from flask import request
+
+# app modules
+from app.forms import LoginForm, RegistrationForm
 from app.models import User, Points, Bets
-from sqlalchemy import desc
 from app import db
 from app.forms import RegistrationForm, EditProfileForm, GamblingForm
+from app import app, connect, helpers
 
-from flask import request
+# external libs
+from sqlalchemy import desc
 from werkzeug.urls import url_parse
-
 from datetime import datetime
+
+import json
 
 @app.route('/')
 @app.route('/index')
@@ -18,19 +23,43 @@ from datetime import datetime
 def index():
     
     # # call API once, each time index is rendered
-    global fixture
-    fixture = helpers.fixture('PL',datetime.utcnow().strftime('%Y'))
+    # global fixture
+    # fixture = connect.fixture('PL')
 
-    global tabla
-    tabla = helpers.standings('PL',datetime.utcnow().strftime('%Y'))
+    # global tabla
+    # tabla = connect.standings('PL')
+    print(session.keys())
+    # if not session.get('fixture'):
+
+    with open(f'fixture.json', 'r') as file:
+        data = json.load(file)
+        session['fixture'] = data['fixture']
+        file.close()
+
+    with open(f'standings.json', 'r') as file:
+        data = json.load(file)
+        session['tabla'] = data
+        file.close()
+
+    with open(f'logos.json', 'r') as file:
+        data = json.load(file)
+        session['logos'] = data
+        file.close()
+    # else:
+    #     print('there is sth in sessions')
+
+    fixture = session['fixture']
+    tabla = session['tabla']
+    logos = session['logos']
 
     # add logo for each team in fixture
     for team in fixture:
-        for logo in tabla[1]:
+        for logo in logos:
             if team['homeTeam'] == logo['team']:
                 team['homelogo'] = logo['teamlogo']
             if team['awayTeam'] == logo['team']:
                 team['awaylogo'] = logo['teamlogo']
+
 
     # get matches of current round if season is on track
     if helpers.season_end(fixture) == True:
@@ -38,7 +67,12 @@ def index():
     else:
         current_round = [matches for matches in fixture if matches['round'] == helpers.up_rounds(fixture)]
         
-    return render_template("index.html", title='Bienvenido', table=tabla[0], fixture=current_round)
+    return render_template("index.html", 
+        title='Bienvenido', 
+        # table=tabla[0], 
+        table=tabla, 
+        fixture=current_round
+    )
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -66,11 +100,16 @@ def login():
     
     return render_template('login.html', title='Ingresar', form=form)
 
+
 @app.route('/logout')
 def logout():
-    
+    session.pop('fixture', default=None)
+    session.pop('logos', default=None)
+    session.pop('tabla', default=None)
+
     logout_user()
     return redirect(url_for('index'))
+
 
 @app.route('/register_fbs', methods=['GET', 'POST'])
 def register():
@@ -95,6 +134,7 @@ def register():
 
     return render_template('register.html', title='Registrarse', form=form)
 
+
 @app.route('/user/<username>')
 @login_required
 def user(username):
@@ -113,15 +153,17 @@ def user(username):
     else:
         ranking = False
 
-    if username == ranking[0]['name']:
-        flash('Felicitaciones, vas ganando!')
+    if ranking:
+        if username == ranking[0]['name']:
+            flash('Felicitaciones, vas ganando!')
 
     # make a line chart with the users points of each round
-    line_chart=helpers.points_plot(fixture)
+    # line_chart=helpers.points_plot(fixture)
+    line_chart = None
 
     return render_template('user.html',
                     user=current_user, 
-                    logo=helpers.logo('PL',user.fav_squad),
+                    logo=connect.logo('PL', current_user.fav_squad),
                     ranking=ranking,
                     plot=line_chart)
 
@@ -129,9 +171,11 @@ def user(username):
 @login_required
 def history(username):
 
+    fixture = session['fixture']
+
     # make table with all the data available (matches, points, bets)
-    points_db = Points.query.filter_by(user_id=User.query.filter_by(username=username).first().id).all()
-    bet_matches = Bets.query.filter_by(user_id=User.query.filter_by(username=username).first().id).all()
+    points_db = Points.query.filter_by(user_id=current_user.id).all()
+    bet_matches = Bets.query.filter_by(user_id=current_user.id).all()
 
     historial = []
     for match in fixture:
@@ -180,84 +224,87 @@ def edit_profile():
 @login_required
 def bet():
 
+    fixture = session['fixture']
     # get matches of next round
-    next_round = [matches for matches in fixture if matches['round'] == helpers.up_rounds(fixture) + 1]
-    
+    next_round_matches = [matches for matches in fixture if matches['round'] == helpers.up_rounds(fixture) + 1]
     # make list of matches in bets
-    bet_matches = Bets.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
+    bet_matches = Bets.query.filter_by(user_id=current_user.id).all()
     bet_list = [int(str(bet)) for bet in bet_matches]
 
     # get matches of next round if season is active
-    # if one matchID exists, all other matches of the same round exist as well. 
-    # then, make a list to pass as value of each form
     if helpers.season_end(fixture) == True:
-        next_round = False
+        next_round_matches = False
     else:
+        # then make a list to pass as value attribute of each field
         score_list = []
-        for match in next_round:
+        for match in next_round_matches:
             if match['matchID'] in bet_list:
                 for bet in bet_matches:
                     if int(str(bet.match_id)) == match['matchID']:
                         score_list.append({'home':int(str(bet.score_home)),'away':int(str(bet.score_home))})
-
+        # if not list, no value attribute
         if not score_list:
-            last = False
+             attribute = False
         else:
-            last = score_list
+             attribute = score_list
 
-        # close the bets if access to the bet form is equal to the first date of the coming round
-        if datetime.utcnow().date() == datetime.strptime(next_round[0]['date'], '%d-%m-%Y').date():
-            form = False
-        else:
-            # get bet fields
-            form = GamblingForm()
+        # QUE PASA CON EL CAMBIO DE TEMPORADA
 
-            if form.validate_on_submit():
-                # first check if the bet is already done to overwrite the scores
-                for value, match in zip(form.bet.data, next_round):
-                    # check if the user has not place any bet and add a new user and a new bet
-                    if len(bet_matches) == 0:
-                        new_user_bets = Bets(user_id=User.query.filter_by(username=current_user.username).first().id,
-                            match_id=match['matchID'],
-                            timestamp = datetime.utcnow(),
-                            score_home = value['home'],
-                            score_away = value['away'])
-                        db.session.add(new_user_bets)
-                        db.session.commit()
-                    # check if the already existing user has already place a bet in the database
+        form = GamblingForm()
+
+        if form.validate_on_submit():
+            # first check if the bet is already done to overwrite the scores
+            for value, match in zip(form.bet.data, next_round_matches):
+                # check if the user has not place any bet and add a new user and a new bet
+                if len(bet_matches) == 0:
+                    new_user_bets = Bets(user_id=User.query.filter_by(username=current_user.username).first().id,
+                        match_id=match['matchID'],
+                        timestamp = datetime.utcnow(),
+                        score_home = value['home'],
+                        score_away = value['away'])
+                    db.session.add(new_user_bets)
+                    db.session.commit()
+                # check if the already existing user has already place a bet in the database
+                else:
+                    if match['matchID'] in bet_list:
+                        for bet in bet_matches:
+                            if int(str(bet.match_id)) == match['matchID']:
+                                bet.timestamp = datetime.utcnow()
+                                bet.score_home = value['home']
+                                bet.score_away = value['away']
+                                db.session.commit()
                     else:
-                        if match['matchID'] in bet_list:
-                            for bet in bet_matches:
-                                if int(str(bet.match_id)) == match['matchID']:
-                                    bet.timestamp = datetime.utcnow()
-                                    bet.score_home = value['home']
-                                    bet.score_away = value['away']
-                                    db.session.commit()
-                        else:
-                            new_bet = Bets(user_id=User.query.filter_by(username=current_user.username).first().id,
-                            match_id=match['matchID'],
-                            timestamp = datetime.utcnow(),
-                            score_home = value['home'],
-                            score_away = value['away'])
-                            db.session.add(new_bet)
-                            db.session.commit()
-                flash('Has enviado una apuesta')
-                return redirect(url_for('bet'))
+                        new_bet = Bets(user_id=current_user.id,
+                        match_id=match['matchID'],
+                        timestamp = datetime.utcnow(),
+                        score_home = value['home'],
+                        score_away = value['away'])
+                        db.session.add(new_bet)
+                        db.session.commit()
+            flash('Has enviado una apuesta')
+            return redirect(url_for('bet'))
 
-    return render_template("bet.html", title='Apostar', table=next_round, form=form, value=last)
+    return render_template("bet.html", 
+        title='Apostar', 
+        table=next_round_matches, 
+        form=form, 
+        value= attribute
+    )
 
 @app.route('/results', methods=['GET', 'POST'])
 @login_required
 def results():
 
     # load bets and compare with matches scores
+    fixture = session['fixture']
     helpers.load(fixture, Bets.query.all())
+
+    ### qué pasa cuando hay cambio de temporada
 
     # check if the tournament is over and send email to winner
     # else, load bets and points to show to the user
     if helpers.season_end(fixture) == True:
-        current_round = False
-
+        current_round_matches = False
         users_points = db.session.query(Points.user_id, db.func.sum(Points.points).label('sum')).group_by(Points.user_id).order_by(desc('sum')).all()
         users = User.query.all()
 
@@ -271,21 +318,28 @@ def results():
         helpers.notify(ranking[0]['name'], ranking[0]['points'])
     
     else:
-        show_points = Points.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
+        show_points = Points.query.filter_by(user_id=current_user.id).all()
 
         # get matches of current and next round
-        current_round = [matches for matches in fixture if matches['round'] == helpers.up_rounds(fixture)]
-        next_round = [matches for matches in fixture if matches['round'] == helpers.up_rounds(fixture) + 1]
+        current_round_matches = [matches for matches in fixture if matches['round'] == helpers.up_rounds(fixture)]
+        next_round_matches = [matches for matches in fixture if matches['round'] == helpers.up_rounds(fixture) + 1]
 
-        user_bets = Bets.query.filter_by(user_id=User.query.filter_by(username=current_user.username).first().id).all()
+        # get last round last date and next round first date
+        current_round_date = datetime.strptime(current_round_matches[-1]['date'], '%d-%m-%Y').date()
+        next_round_date = datetime.strptime(next_round_matches[0]['date'], '%d-%m-%Y').date()
 
-        # if new user with no bets, nothing will be loaded
+        # check bets are placed before current round
+        user_bets = Bets.query.filter(Bets.user_id == 1, Bets.timestamp <= current_round_date).all()
+        
+        # if user has no bets for last round, nothing will be loaded
         # once the round is over, the next round will be loaded
         total = 0
         if not user_bets:
             total = 'no_bets'
-        elif datetime.utcnow().date() != datetime.strptime(next_round[0]['date'], '%d-%m-%Y').date():
-            for match in current_round:
+        # show last/past round scores and bets (available until next round)
+        elif datetime.utcnow().date() != next_round_date:
+            print('loading')
+            for match in current_round_matches:
                 for score in show_points:
                     for bet in user_bets:
                         if match['matchID'] == int(str(score.match_id)) and match['matchID'] == int(str(bet.match_id)):
@@ -298,5 +352,9 @@ def results():
                                 match['points'] = None
         else:
             total = 'closed'
-
-    return render_template("results.html", title='Puntos', table=current_round, total=total)
+        
+    return render_template("results.html",
+        title='Puntos',
+        table=current_round_matches,
+        total=total
+    )
