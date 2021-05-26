@@ -19,8 +19,8 @@ class Config():
 
     ROWS_PER_PAGE = 10
 
-    # SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'database.db')
-    SQLALCHEMY_DATABASE_URI = "postgresql://postgres:jeanluc@localhost:5432/futbolero"
+    PSQL_PASS = os.environ.get('PSQL_PASS')
+    SQLALCHEMY_DATABASE_URI = f"postgresql://postgres:{PSQL_PASS}@localhost:5432/futbolero"
 
     SQLALCHEMY_TRACK_MODIFICATIONS = os.environ.get('SQLALCHEMY_TRACK_MODIFICATIONS')
 
