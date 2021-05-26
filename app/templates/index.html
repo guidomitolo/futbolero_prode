@@ -3,6 +3,19 @@
 {% block content %}
     <h1>¡Hola {{ current_user.username }}!</h1>
     <h3>Temporada {{ fixture[0].season }}</h3>
+
+    <form method="POST">
+        <button type="submit" name="button" value="PD">La Liga</button>
+        <button type="submit" name="button" value="SA">Serie A</button>
+        <button type="submit" name="button" value="FL1">Ligue 1</button>
+        <button type="submit" name="button" value="BL1">Bundesliga</button>
+        <button type="submit" name="button" value="PL">Premier League</button>
+    </form>
+
+
+
+
+
     <h3>Semana {{ fixture[0].round }}</h3>
     {% if fixture == False %}
         <h2>La temporado ha finalizado</h2>
@@ -77,4 +90,10 @@
         {% endfor %}
         </tbody>
     </table>
+    <p>Pendientes</p>
+    {% if postponed %}
+    {{ postponed }}
+    {% else %}
+    <p>No hay partido reprogramados</p>
+    {% endif %}
 {% endblock %}

@@ -17,7 +17,11 @@ class Config():
 
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
 
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'database.db')
+    ROWS_PER_PAGE = 10
+
+    # SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'database.db')
+    SQLALCHEMY_DATABASE_URI = "postgresql://postgres:jeanluc@localhost:5432/futbolero"
+
     SQLALCHEMY_TRACK_MODIFICATIONS = os.environ.get('SQLALCHEMY_TRACK_MODIFICATIONS')
 
     SESSION_PERMANENT = False

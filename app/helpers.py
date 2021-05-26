@@ -1,7 +1,9 @@
 from datetime import datetime
 
+from sqlalchemy.sql.expression import false, null
+
 import app
-from app.models import User, Points
+from app.models import User
 from app import db
 
 import json
@@ -10,11 +12,18 @@ import plotly
 import plotly.express as px
 
 
-def season_end(all_matches):
-    # check if all matches have any scores. If any score missing, return False
-    all_played = [match['score'][0] for match in all_matches]
-    return None not in all_played    
+def pending(all_matches, date=None):
 
+    date = datetime.strptime(all_matches[-1]['date'], '%d-%m-%Y').date()
+
+    pending = []
+    for match in all_matches:
+        if datetime.strptime(match['date'], '%d-%m-%Y').date() <= date :
+            if match['score'][0] == None:
+                pending.append(match)
+
+    return pending
+    
 
 def up_rounds(all_matches):
 
@@ -24,6 +33,11 @@ def up_rounds(all_matches):
 
 
 def score(bet_home, score_home, bet_away, score_away):
+
+    bet_home = int(bet_home)
+    score_home = int(score_home)
+    bet_away = int(bet_away)
+    score_away = int(score_away)
 
     # give points
     if bet_home == score_home and bet_away == score_away:
@@ -38,26 +52,9 @@ def score(bet_home, score_home, bet_away, score_away):
         return 0
 
 
-def load(all_matches, all_bets):
-
-    # load points in database
-    points_db = Points.query.all()
-    points_recorded = [(score.user_id,score.match_id)  for score in points_db]
-    bets_recorded = [(score.user_id,score.match_id) for score in all_bets]
-
-    for match in all_matches:
-        for bet in all_bets:
-            if int(str(bet.match_id)) == match['matchID']:
-                if (bet.user_id, bet.match_id) not in points_recorded:
-                    if match['score'][0] != None:
-                        points_match = Points(user_id=bet.user_id, 
-                        match_id=match['matchID'],
-                        points= score(int(str(bet.score_home)), match['score'][0], int(str(bet.score_away)), match['score'][1]))
-                        db.session.add(points_match)
-                        db.session.commit()
-
-
 def points_plot(all_matches):
+
+    ### CHEQUEAR Q NO SE PUEDA ELIMINAR USER
 
     user_data = db.session.query(User).join(User.rank).group_by(User.id).all()
 
@@ -99,15 +96,35 @@ def points_plot(all_matches):
     return chart
 
 
-def notify(username, user_points):
+def get_history(fixture, user_points, user_bets, season):
+
+    historial = []
+    for match in fixture:
+        for score in user_points:
+            for bet in user_bets:
+                if match['score'][0] != None:
+                    if match['matchID'] == int(str(score.match_id)) and match['matchID'] == int(str(bet.match_id)):
+                        historial.append({
+                            'round':match['round'],
+                            'homeTeam': match['homeTeam'], 
+                            'score_home':match['score'][0],
+                            'bet_local':bet.score_home,
+                            'awayTeam':match['awayTeam'],
+                            'score_away':match['score'][1],
+                            'bet_away':bet.score_away,
+                            'points':score.points,
+                            'season':season
+                            }
+                        )
+
+    return historial
+    
+
+
+def notify(username, user_points, email):
 
     import smtplib
-    import base64
 
-    user = User.query.filter_by(username=username).first()
-
-    # adm_mail = os.environ.get("ADM_MAIL")
-    # adm_pass = os.environ.get("ADM_PASS")
     adm_mail = app.config("ADM_MAIL")
     adm_pass = app.config("ADM_PASS")
 
@@ -122,4 +139,4 @@ def notify(username, user_points):
         body = f'Estimado/a {username},\n\nHa ganado el campeonato de apuestas con {user_points} puntos. Nos estaremos comunicando a la brevedad para coordinar la entrega de un premio sorpresa.\n\nSaluda atte.\n\nFUTBOLERO - PRODE'
         msg = f'{subject}\n\n{body}'
 
-        smtp.sendmail(adm_mail, f"{user.email}", msg)
+        smtp.sendmail(adm_mail, f"{email}", msg)

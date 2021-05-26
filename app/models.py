@@ -5,15 +5,8 @@ from flask_login import UserMixin
 from app import login
 from hashlib import md5
 
-# the data to be stored in the database will be represented by 
-# a collection of classes (called database models) that inherit
-# db.Model, a base class for all models from Flask-SQLAlchemy, 
-# defines several fields as class variables. 
 
 class User(UserMixin, db.Model):
-
-    # fields are created as instances of the db.Column class, 
-    # which takes the field type as an argument
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
@@ -22,11 +15,10 @@ class User(UserMixin, db.Model):
 
     fav_squad = db.Column(db.String(128))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
-
     # db relationship lets the user db be connected with the other dbs
     rank = db.relationship('Points', backref='user_points', lazy='dynamic')
-
     bet = db.relationship('Bets', lazy='dynamic')
+    winner = db.relationship('Seasons', backref='user_winner', lazy='dynamic')
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -42,15 +34,7 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
-class Points(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    match_id = db.Column(db.Integer)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    points = db.Column(db.Integer)
 
-    def __repr__(self):
-        return '{}'.format(self.match_id)
 
 class Bets(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -59,9 +43,39 @@ class Bets(db.Model):
     match_id = db.Column(db.Integer, nullable=False)
     score_home = db.Column(db.String(140))
     score_away = db.Column(db.String(140))
+    league = db.Column(db.String(140))
+    season = db.Column(db.Integer)
 
     def __repr__(self):
         return '{}'.format(self.match_id)
+        
+
+class Points(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    match_id = db.Column(db.Integer)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    points = db.Column(db.Integer)
+    hits = db.Column(db.Integer, default=0)
+    league = db.Column(db.String(140))
+    season = db.Column(db.Integer)
+
+    def __repr__(self):
+        return '{}'.format(self.match_id)
+
+
+class Seasons(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    league = db.Column(db.String(140))
+    season = db.Column(db.Integer)
+    finished = db.Column(db.Boolean)
+    winner = db.Column(db.Integer, db.ForeignKey('user.id'))
+    total_points = db.Column(db.Integer)
+    matches_hits = db.Column(db.Integer)
+
+    def __repr__(self):
+        return '{}'.format(self.season)
+
 
 @login.user_loader
 def load_user(id):

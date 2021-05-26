@@ -19,16 +19,28 @@
                     </td>
                 </tr>
             </table>
+
+        <form method="POST">
+            <button type="submit" name="button" value="PD">La Liga</button>
+            <button type="submit" name="button" value="SA">Serie A</button>
+            <button type="submit" name="button" value="FL1">Ligue 1</button>
+            <button type="submit" name="button" value="BL1">Bundesliga</button>
+            <button type="submit" name="button" value="PL">Premier League</button>
+        </form>
+
         <h3 style="margin-top: 10px; margin-bottom;: 10px">Ranking de usuarios</h3>
-        {% if ranking == false %}
-            <p>Todavía no hay puntos</p>
-        {% else %}
+
+
+
+        {% if ranking %}
             <table class='table table-striped' style='line-height: 14px; text-align:center;'>
                 <thead>
+                    <tr>Temporada {{ current_season }} {{ league }}</tr>
                     <tr>
                         <td>Ranking</td>
                         <td>Nombre</td>
                         <td>Puntos</td>
+                        <td>Hits</td>
                     </tr>
                 </thead>
                 <body>
@@ -37,10 +49,13 @@
                         <td>{{ loop.index }}</td>
                         <td>{{ row.name }}</td>
                         <td><b>{{ row.points }}</b></td>
+                        <td><b>{{ row.hits }}</b></td>
                     </tr>
                     {% endfor %}
                 </body>
             </table>
+        {% else %}
+        <p>Todavía no hay puntos</p>
         {% endif %}
         </div>
         <div class="col-sm-7">
@@ -51,5 +66,48 @@
                 </script>
             </div>
         </div>
+        {% if winners %}
+        <h3>Ganadores Históricos</h3>
+        <table class='table table-striped' style='line-height: 14px; text-align:center;'>
+            <thead>
+                <tr>
+                    <td>Liga</td>
+                    <td>Temporada</td>
+                    <td>Nombre</td>
+                    <td>Puntos</td>
+                    <td>Hits</td>
+                </tr>
+            </thead>
+            <body>
+                {% for winner in winners %}
+                <tr>
+                    <td>{{ winner.league }}</td>
+                    <td>{{ winner.season }}</td>
+                    {% if not winner.user_winner.username %}
+                    <td>Vacante</td>
+                    {% else %}
+                    <td>{{ winner.user_winner.username }}</td>
+                    {% endif %}
+ 
+                    {% if not winner.total_points %}
+                    <td>-</td>
+                    {% else %}
+                    <td><b>{{ winner.total_points }}</b></td>
+                    {% endif %}
+
+                    {% if not winner.matches_hits %}
+                    <td>-</td>
+                    {% else %}
+                    <td><b>{{ winner.matches_hits }}</b></td>
+                    {% endif %}
+                    
+                </tr>
+                {% endfor %}
+            </body>
+        </table>
+        {% else %}
+        <p>No se registraron apuestas para la temporada {{ current_season }} de la {{ league }}</p>
+        {% endif %}
     </div>
+    
 {% endblock %}

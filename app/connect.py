@@ -11,17 +11,8 @@ api_key = os.environ.get("API_KEY")
 
 # API REQUEST
 headers = { 'X-Auth-Token': api_key }
-URL = f"https://api.football-data.org/v2/competitions/PL/matches?season=2020"
-response = requests.get(url = URL, headers = headers)
-
-# SEASON YEAR
-current_year = datetime.now().date().year
-half = datetime.strptime(f"{current_year}-06-01", '%Y-%m-%d').date()
-
-if half > datetime.now().date():
-    season = datetime.now().date().year - 1
-else:
-    season = datetime.now().date().year
+# URL = f"https://api.football-data.org/v2/competitions/PL/matches?season=2020"
+# response = requests.get(url = URL, headers = headers)
 
 
 def logo(league, team):
@@ -42,12 +33,13 @@ def logo(league, team):
     except (KeyError, TypeError, ValueError):
         return None
 
-def fixture(league):
+def fixture(league, season):
     # Contact API
     try:
         URL = f"https://api.football-data.org/v2/competitions/{league}/matches?season={season}"
         response = requests.get(url = URL, headers = headers)
         response.raise_for_status()
+        print("FIXTURE", response)
     except requests.RequestException:
         return None
     # Parse response
@@ -68,12 +60,13 @@ def fixture(league):
     except (KeyError, TypeError, ValueError):
         return None
 
-def standings(league):
+def standings(league, season):
     # Contact API
     try:
         URL = f"https://api.football-data.org/v2/competitions/{league}/standings?season={season}"
         response = requests.get(url = URL, headers = headers) 
         response.raise_for_status()
+        print("STANDINGS", response)
     except requests.RequestException:
         return None
     # Parse response

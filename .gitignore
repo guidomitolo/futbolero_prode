@@ -4,4 +4,5 @@ logs
 database.db
 *.json
 connection.py
+.vscode
 

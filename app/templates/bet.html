@@ -1,7 +1,8 @@
 {% extends "base.html" %} 
 
 {% block content %}
-    <p>
+
+<p>
         <h2 style="display:inline-block;">Apuestas</h2>
         <button onclick="help()" style="display:inline-block;float: right;" type="button" class="btn btn-outline-primary">
             Ayuda 
@@ -14,6 +15,7 @@
         </button>
     </p>
 
+    {% if table %}
     <h3>Próxima ronda: semana {{ table[0].round }}</h3>
     <form method="POST" action="" novalidate>
         <table class="table table-sm">
@@ -42,7 +44,7 @@
                         </td>
 
                         {% if form != False %}
-                            {% if value != False %}
+                            {% if value %}
                             <td style="text-align: center;">{{ form.bet[row].home(value=value[row].home, size=2) }}</td>
                             <td style="text-align: center;">{{ form.bet[row].away(value=value[row].away, size=2) }}</td>
                             {% else %}
@@ -73,6 +75,11 @@
             {% endif %}
         </div>
     </form>
+    {% else %}
+    <h4>Ya no quedan partidos</h4>
+    <p>Aguardar al fixture de la próxima temporada</p>
+    {% endif %}
+
 
     <script>
         function help()

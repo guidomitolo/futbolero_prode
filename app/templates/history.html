@@ -14,6 +14,7 @@
                     <th>Goles<br>Visitante</th>
                     <th>Apuesta<br>Visitante</th>
                     <th>Puntos</th>
+                    <th>Temporada</th>
                 </tr>
             </thead>
             <tbody>    
@@ -27,10 +28,17 @@
                         <td align="center">{{ row.score_away }}</td>
                         <td align="center">{{ row.bet_away }}</td>
                         <td><b>{{ row.points }}</b></td>
+                        <td>{{ row.season }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
+        {% if prev_url %}
+        <a href="{{ prev_url }}">Back</a>
+        {% endif %}
+        {% if next_url %}
+        <a href="{{ next_url }}">More</a>
+        {% endif %}
     {% else %}
         <p>No hay apuestas</p>
     {% endif %}
