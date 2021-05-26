@@ -20,7 +20,7 @@ from datetime import datetime
 def login():
 
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
 
     form = LoginForm()
 
@@ -29,14 +29,14 @@ def login():
         user = User.query.filter_by(username=form.username.data).first() 
         if user is None or not user.check_password(form.password.data):
             flash('Usuario o Password Inválidos')
-            return redirect(url_for('login'))
+            return redirect(url_for('auth.login'))
 
         login_user(user, remember=form.remember_me.data)
         
         next_page = request.args.get('next')
 
         if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('index')
+            next_page = url_for('main.index')
 
         return redirect(next_page)
     
@@ -52,14 +52,14 @@ def logout():
     session.pop('league', default=None)
 
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('main.index'))
 
 
 @bp.route('/register_fbs', methods=['GET', 'POST'])
 def register():
 
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
     
     form = RegistrationForm()
 
@@ -74,7 +74,7 @@ def register():
         user.set_password(form.password.data)
 
         flash('Felicitaciones, usted se ha registrado exitosamente!')
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
 
     return render_template('auth/register.html', title='Registrarse', form=form)
 

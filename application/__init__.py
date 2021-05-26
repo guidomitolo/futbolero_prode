@@ -16,7 +16,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 
 login = LoginManager()
-login.login_view = 'login'
+login.login_view = 'auth.login'
 login.login_message = u"Por favor ingresar para acceder al sitio."
 
 moment = Moment()
