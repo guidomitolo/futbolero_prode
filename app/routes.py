@@ -43,7 +43,6 @@ def index():
     if not session.get('fixture') or request.method == 'POST':
         session['fixture'] = connect.fixture(session['league'], session['season'])
         session['tabla'], session['logos'] = connect.standings(session['league'], session['season'])
-
         # add logo for each team in fixture
         for team in session['fixture']:
             for logo in session['logos'] :
@@ -85,9 +84,6 @@ def index():
     # current round date
     current_round_date = datetime.strptime(current_round[0]['date'], '%d-%m-%Y').date()
 
-    # check for not past/present/future not played games
-    remaining = helpers.pending(fixture)
-
     # load all users points if any
     users = User.query.all()
     for user in users:
@@ -113,6 +109,10 @@ def index():
                             db.session.add(load_points)
                             db.session.commit()
 
+
+    # check for not past/present/future not played games
+    remaining = helpers.pending(fixture)
+    
     if not remaining:
         # no matches remaing in the season
         flash('Esta temporada ya ha finalizado')
@@ -126,6 +126,7 @@ def index():
                 ) \
                 .group_by(Points.user_id) \
                 .order_by(desc('sum')) \
+                .order_by(desc('sum_2')) \
                 .filter(Points.season == session['season'], Points.league == session['league']
             ).first()
             
@@ -231,11 +232,18 @@ def register():
 def user(username):
 
     # get league with post
-    league = session['league']
     if request.method == 'POST':
-        league = request.form.get('button', 'PL')
-
-    season = session['season']
+        session['league'] = request.form.get('button')
+        session['tabla'], session['logos'] = connect.standings(session['league'], session['season'])
+        session['fixture'] = connect.fixture(session['league'], session['season'])
+        
+        # add logo for each team in fixture
+        for team in session['fixture']:
+            for logo in session['logos'] :
+                if team['homeTeam'] == logo['team']:
+                    team['homelogo'] = logo['teamlogo']
+                if team['awayTeam'] == logo['team']:
+                    team['awaylogo'] = logo['teamlogo']
 
     users_points = db.session.query(
         Points.user_id, 
@@ -244,7 +252,7 @@ def user(username):
         ) \
         .group_by(Points.user_id) \
         .order_by(desc('sum')) \
-        .filter(Points.season == season, Points.league == league) \
+        .filter(Points.season == session['season'], Points.league == session['league']) \
     .all()
     
     # prepare ranking
@@ -273,69 +281,53 @@ def user(username):
             if current_user.username == ranking[0]['name']:
                 flash('¡Has ganado la temporada!')
 
-            finished_season = Seasons.query.filter_by(season=session['season'], league=session['league']).first()   
-            if not finished_season:
-                helpers.notify(ranking[0]['name'], ranking[0]['points'], ranking[0]['email'])
-                finished_season.season = session['season']
-                finished_season.league = session['league']
-                finished_season.winner = User.query.filter_by(username = ranking[0]['name']).first().id
-                finished_season.total_points = ranking[0]['points']
-                finished_season.matches_hits =  ranking[0]['hits']
-                db.session.commit()
+        get_season = Seasons.query.filter_by(season=session['season'], league=session['league']).first()           
+        if not get_season:
+            winner = db.session.query(
+                Points.user_id, 
+                db.func.sum(Points.points).label('sum'), 
+                db.func.sum(Points.hits).label('sum_2')
+                ) \
+                .group_by(Points.user_id) \
+                .order_by(desc('sum')) \
+                .order_by(desc('sum_2')) \
+                .filter(Points.season == session['season'], Points.league == session['league']
+            ).first()
+            
+            user = None
+            points = None
+            hits = None
+            if winner:
+                user = User.query.filter_by(id = winner.user_id).first().username
+                points = winner[1]
+                hits = winner[2]
+
+            load_season = Seasons(
+                season=session['season'],
+                league=session['league'],
+                finished=True,
+                winner = user,
+                total_points = points,
+                matches_hits =  hits,
+            )
+            db.session.add(load_season)
+            db.session.commit()
+
     else:
         # check if first place
         if ranking:
             if username == ranking[0]['name']:
                 flash('¡Felicitaciones, vas ganando!')
 
-
-
-
     # get past winners
-    past_winners = Seasons.query.filter(Seasons.league == league, Seasons.finished == True).all()
+    past_winners = Seasons.query.filter(Seasons.league == session['league'], Seasons.finished == True).all()
     
-    # remaining = helpers.pending(fixture)
-    # if not remaining:
-    #     # no matches remaing in the season
-    #     flash('Esta temporada ya ha finalizado')
-    #     end_season = Seasons.query.filter_by(season=session['season'], league=session['league']).first()
-    #     if not end_season:
-
-    #         winner = db.session.query(
-    #             Points.user_id, 
-    #             db.func.sum(Points.points).label('sum'), 
-    #             db.func.sum(Points.hits).label('sum_2')
-    #             ) \
-    #             .group_by(Points.user_id) \
-    #             .order_by(desc('sum')) \
-    #             .filter(Points.season == session['season'], Points.league == session['league']
-    #         ).first()
-            
-    #         user = None
-    #         points = None
-    #         hits = None
-    #         if winner:
-    #             user = User.query.filter_by(id = winner.user_id).first().username
-    #             points = winner[1]
-    #             hits = winner[2]
-
-    #         load_season = Seasons(
-    #             season=session['season'],
-    #             league=session['league'],
-    #             finished=True,
-    #             winner = user,
-    #             total_points = points,
-    #             matches_hits =  hits,
-    #         )
-    #         db.session.add(load_season)
-    #         db.session.commit()
-
     return render_template('user.html',
                     user=current_user, 
                     logo=connect.logo('PL', current_user.fav_squad),
                     ranking=ranking,
                     current_season = session['season'],
-                    league = league,
+                    league = session['league'],
                     winners = past_winners,
                     plot=line_chart)
 
