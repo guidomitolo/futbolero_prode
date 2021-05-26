@@ -1,26 +1,26 @@
 # flask core libs
 from re import search
 from flask import render_template, flash, redirect, url_for, session
-from flask_login import current_user, login_user, logout_user, login_required
+from flask_login import current_user, login_required
 from flask import request
 from sqlalchemy.sql.expression import null
 
 # app modules
-from app.forms import LoginForm, RegistrationForm
-from app.models import User, Points, Bets, Seasons
-from app import db
-from app.forms import RegistrationForm, EditProfileForm, GamblingForm
-from app import app, connect, helpers
+from application import current_app as app
+from application.main import bp
+from application.auth.models import User
+from application.main.models import Points, Bets, Seasons
+from application import db
+from application.main.forms import EditProfileForm, GamblingForm
+from application.main import connect, helpers
 
 # external libs
 from sqlalchemy import desc
-from werkzeug.urls import url_parse
 from datetime import datetime
 
-import json
 
-@app.route('/', methods=['GET', 'POST'])
-@app.route('/index', methods=['GET', 'POST'])
+@bp.route('/', methods=['GET', 'POST'])
+@bp.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
 
@@ -36,8 +36,6 @@ def index():
         session['season'] = datetime.now().date().year - 1
     else:
         session['season'] = datetime.now().date().year
-
-    # session['season'] = '2019'
     
     # fixture api call
     if not session.get('fixture') or request.method == 'POST':
@@ -55,31 +53,8 @@ def index():
     fixture = session['fixture']
     tabla = session['tabla']
 
-    # # load api in session if empty
-    # if not session.get('fixture'):
-
-    #     with open(f'fixture_2019.json', 'r') as file:
-    #     # with open(f'fixture_SA.json', 'r') as file:
-    #         data = json.load(file)
-    #         session['fixture'] = data['fixture']
-    #         file.close()
-
-    #     with open(f'standings.json', 'r') as file:
-    #         data = json.load(file)
-    #         session['tabla'] = data
-    #         file.close()
-
-    #     with open(f'logos.json', 'r') as file:
-    #         data = json.load(file)
-    #         session['logos'] = data
-    #         file.close()
-    # fixture = session['fixture']
-    # tabla = session['tabla']
-    # logos = session['logos']
-
     # get current round matches and currrent round first date
     current_round = [matches for matches in fixture if matches['round'] == helpers.up_rounds(fixture)]
-    # current_round = [matches for matches in fixture if matches['round'] == helpers.up_rounds(fixture) - 4]
 
     # current round date
     current_round_date = datetime.strptime(current_round[0]['date'], '%d-%m-%Y').date()
@@ -157,77 +132,15 @@ def index():
                 if match['score'][0] != None:
                     remaining.remove(match)
                    
-    return render_template("index.html", 
+    return render_template("main/index.html", 
         title='Bienvenido', 
         table=tabla, 
         fixture=current_round,
         postponed = remaining
     )
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
 
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-
-    form = LoginForm()
-
-    if form.validate_on_submit():
-
-        user = User.query.filter_by(username=form.username.data).first() 
-        if user is None or not user.check_password(form.password.data):
-            flash('Usuario o Password Inválidos')
-            return redirect(url_for('login'))
-
-        login_user(user, remember=form.remember_me.data)
-        
-        next_page = request.args.get('next')
-
-        if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('index')
-
-        return redirect(next_page)
-    
-    return render_template('login.html', title='Ingresar', form=form)
-
-
-@app.route('/logout')
-def logout():
-    session.pop('fixture', default=None)
-    session.pop('logos', default=None)
-    session.pop('tabla', default=None)
-    session.pop('season', default=None)
-    session.pop('league', default=None)
-
-    logout_user()
-    return redirect(url_for('index'))
-
-
-@app.route('/register_fbs', methods=['GET', 'POST'])
-def register():
-
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-    
-    form = RegistrationForm()
-
-    # check submitted form
-    if form.validate_on_submit():
-
-        user = User(username=form.username.data, email=form.email.data)
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-
-        user.set_password(form.password.data)
-
-        flash('Felicitaciones, usted se ha registrado exitosamente!')
-        return redirect(url_for('login'))
-
-    return render_template('register.html', title='Registrarse', form=form)
-
-
-@app.route('/user/<username>', methods=['GET', 'POST'])
+@bp.route('/user/<username>', methods=['GET', 'POST'])
 @login_required
 def user(username):
 
@@ -270,7 +183,6 @@ def user(username):
                         })
 
     # make a line chart with the users points of each round
-    # line_chart=helpers.points_plot(session['fixture'])
     line_chart = None
 
     current_user = User.query.filter_by(username=username).first_or_404()
@@ -322,7 +234,7 @@ def user(username):
     # get past winners
     past_winners = Seasons.query.filter(Seasons.league == session['league'], Seasons.finished == True).all()
     
-    return render_template('user.html',
+    return render_template('main/user.html',
                     user=current_user, 
                     logo=connect.logo('PL', current_user.fav_squad),
                     ranking=ranking,
@@ -332,13 +244,11 @@ def user(username):
                     plot=line_chart)
 
 
-@app.route('/history/<username>')
+@bp.route('/history/<username>')
 @login_required
 def history(username):
 
-    # POST
-    fixture = session['fixture']
-    # fixture = connect.fixture(fixture, session['season'])[0]
+    # MAKE A LEAGUE LIST
     
     page = request.args.get('page', 1, type=int)
 
@@ -356,24 +266,16 @@ def history(username):
     .order_by(Bets.match_id) \
     .paginate(page, app.config['ROWS_PER_PAGE'], False)
 
-    historial = helpers.get_history(fixture, user_points.items, user_bets.items, session['season'])
+    historial = helpers.get_history(session['fixture'], user_points.items, user_bets.items, session['season'])
 
     next_url = url_for('history', username=current_user.username, page = user_bets.next_num) if user_bets.has_next else None
     prev_url = url_for('history', username=current_user.username, page = user_bets.prev_num) if user_bets.has_prev else None
     
 
-    return render_template('history.html', user=username, history=historial, next_url=next_url, prev_url=prev_url)
+    return render_template('main/history.html', user=username, history=historial, next_url=next_url, prev_url=prev_url)
 
-@app.before_request
-def before_request():
 
-    # current_user reference -> Flask-Login will invoke the user loader callback function, 
-    # which will run a database query that will put the target user in the database session
-    if current_user.is_authenticated:
-        current_user.last_seen = datetime.utcnow() 
-        db.session.commit()
-
-@app.route('/edit_profile', methods=['GET', 'POST'])
+@bp.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
 
@@ -388,9 +290,10 @@ def edit_profile():
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.fav_squad.data = current_user.fav_squad
-    return render_template('edit_profile.html', title='Editar Perfil', form=form)
+    return render_template('main/edit_profile.html', title='Editar Perfil', form=form)
 
-@app.route('/bet', methods=['GET', 'POST'])
+
+@bp.route('/bet', methods=['GET', 'POST'])
 @login_required
 def bet():
 
@@ -453,14 +356,14 @@ def bet():
         flash('Has enviado una apuesta')
         return redirect(url_for('bet'))
 
-    return render_template("bet.html", 
+    return render_template("main/bet.html", 
         title ='Apostar', 
         table = next_round_matches, 
         form = form, 
         value = attributes
     )
 
-@app.route('/results', methods=['GET', 'POST'])
+@bp.route('/results', methods=['GET', 'POST'])
 @login_required
 def results():
     # get matches of current and next round
@@ -515,7 +418,7 @@ def results():
     else:
         total = 'closed'
         
-    return render_template("results.html",
+    return render_template("main/results.html",
         title='Puntos',
         table=current_round_matches,
         total=total
