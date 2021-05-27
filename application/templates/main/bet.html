@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<p>
+    <p>
         <h2 style="display:inline-block;">Apuestas</h2>
         <button onclick="help()" style="display:inline-block;float: right;" type="button" class="btn btn-outline-primary">
             Ayuda 
@@ -75,6 +75,9 @@
             {% endif %}
         </div>
     </form>
+    {% elif table == False %}
+    <h4>Conexión con API no responde</h4>
+    <p>Por favor volver a intentar en breve</p>
     {% else %}
     <h4>Ya no quedan partidos</h4>
     <p>Aguardar al fixture de la próxima temporada</p>

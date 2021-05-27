@@ -2,6 +2,7 @@
 
 {% block content %}
     <h2>Editar Perfil</h2>
+    {% if leagues %}
     <p>Equipo</p>
     <form action="" method="post">
         <p>
@@ -19,6 +20,7 @@
                 {% endfor %}
             </select>
         </p>
+    {% endif %}
         <p>
             {{ form.username.label }}<br>
             {{ form.username(size=32) }}<br>

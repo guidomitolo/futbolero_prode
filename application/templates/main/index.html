@@ -2,6 +2,7 @@
 
 {% block content %}
     <h1>¡Hola {{ current_user.username }}!</h1>
+    {% if fixture %}
     <h3>Temporada {{ fixture[0].season }}</h3>
 
     <form method="POST">
@@ -95,5 +96,10 @@
     {{ postponed }}
     {% else %}
     <p>No hay partido reprogramados</p>
+    {% endif %}
+
+    {% else %}
+    <h4>Conexión con API no responde</h4>
+    <p>Por favor volver a intentar en breve</p>
     {% endif %}
 {% endblock %}

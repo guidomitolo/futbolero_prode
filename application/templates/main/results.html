@@ -13,8 +13,11 @@
             </svg>
         </button>
     </p>
-    {% if table == False %}
-        <h3>La temporada ha finalizado</h3>
+    {% if not table %}
+    <h4>Conexión con API no responde</h4>
+    <p>Por favor volver a intentar en breve</p>
+    {% elif table == False %}
+    <h3>La temporada ha finalizado</h3>
     {% else %}
         {% if total == 'closed' %}
             <p>Fecha cerrada</p>
@@ -86,11 +89,11 @@
                 </tbody>
             </table>
         {% endif %}
-        <script>
-            function help()
-            {
-                alert("Regla de puntuación:\n\nGoles exactos: 6 puntos\nCoincide resultado: 3 puntos");
-            }
-        </script>
     {% endif %}
+    <script>
+        function help()
+        {
+            alert("Regla de puntuación:\n\nGoles exactos: 6 puntos\nCoincide resultado: 3 puntos");
+        }
+    </script>
 {% endblock %}

@@ -21,6 +21,7 @@ def logo(league, team):
         URL = f"http://api.football-data.org/v2/competitions/{league}/teams"
         response = requests.get(url = URL, headers = headers) 
         response.raise_for_status()
+        print("LOGO", response)
     except requests.RequestException:
         return None
 
@@ -98,6 +99,7 @@ def team(league):
         URL = f"http://api.football-data.org/v2/competitions/{league}/teams"
         response = requests.get(url = URL, headers = headers) 
         response.raise_for_status()
+        print("TEAM", response)
     except requests.RequestException:
         return None
     # Parse response

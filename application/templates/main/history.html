@@ -2,7 +2,7 @@
 
 {% block content %}
     <h2>Registro de apuestas y puntos</h2>
-    {% if history is defined %}
+    {% if history %}
         <table class='table table-striped' style="margin-top:20px; text-align: center; line-height: 14px;">
             <thead style="vertical-align: middle;">
                 <tr>
@@ -40,6 +40,7 @@
         <a href="{{ next_url }}">More</a>
         {% endif %}
     {% else %}
-        <p>No hay apuestas</p>
+        <h4>Conexión con API no responde</h4>
+        <p>Por favor volver a intentar en breve</p>
     {% endif %}
 {% endblock %}
