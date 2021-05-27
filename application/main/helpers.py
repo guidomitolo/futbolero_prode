@@ -1,15 +1,5 @@
 from datetime import datetime
 
-from sqlalchemy.sql.expression import false, null
-
-# from application.auth.models import User
-# from application import db
-
-# import json
-
-# import plotly
-# import plotly.express as px
-
 
 def pending(all_matches, date=None):
 
@@ -49,50 +39,6 @@ def score(bet_home, score_home, bet_away, score_away):
         return 3
     else:
         return 0
-
-
-# def points_plot(all_matches):
-
-#     ### CHEQUEAR Q NO SE PUEDA ELIMINAR USER
-
-#     user_data = db.session.query(User).join(User.rank).group_by(User.id).all()
-
-#     round_points = []
-#     for user in user_data:
-#         for data in user.rank.all():
-#             for match in all_matches:
-#                 if match['matchID'] == data.match_id:
-#                     round_points.append({'name':user.username,
-#                         'round':match['round'],
-#                         'points':data.points})
-
-#     weeks = set([match['round'] for match in round_points])
-#     users = [user.username for user in user_data]
-
-#     label=[]
-#     y=[]
-#     x=[]
-#     for user in users:
-#         for week in weeks:
-#             total_points = 0
-#             for row in round_points:
-#                 if row['name'] == user:
-#                     if row['round'] == week:
-#                         total_points = total_points + row['points']
-#             label.append(user)
-#             x.append(week)
-#             y.append(total_points)
-
-#     dic = dict(zip(['usuario','semana','puntos'],[label, x, y]))
-
-#     fig = px.line(dic, x="semana", y="puntos", color="usuario",
-#                 line_group="usuario", hover_name="usuario")
-#     fig.update_traces(mode='markers+lines')
-#     fig.update_layout(font_family="Helvetica")
-
-#     chart = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-    
-#     return chart
 
 
 def get_history(fixture, user_points, user_bets, season):

@@ -3,19 +3,17 @@ from wtforms import StringField, SubmitField, SelectField
 from wtforms import FormField, FieldList, IntegerField, Form
 from wtforms.validators import ValidationError, DataRequired
 from application.auth.models import User
-from application.main import connect
 
 
 class EditProfileForm(FlaskForm):
-    
-    username = StringField('Nombre de usuario', validators=[DataRequired()])
-    fav_squad = SelectField('Fav\' Squad', choices=connect.team('PL'))
-    submit = SubmitField('Guardar')
 
     # constructor to check if the user is logged
     def __init__(self, original_username, *args, **kwargs):
         super(EditProfileForm, self).__init__(*args, **kwargs)
         self.original_username = original_username
+
+    username = StringField('Nombre de usuario', validators=[DataRequired()])
+    submit = SubmitField('Guardar')
 
     def validate_username(self, username):
         if username.data != self.original_username:

@@ -2,18 +2,29 @@
 
 {% block content %}
     <h2>Editar Perfil</h2>
+    <p>Equipo</p>
+    <form action="" method="post">
+        <p>
+            {% for key, value in leagues.items() %}
+            <button type="submit" name="button_league" value="{{ value }}">{{ key }}</button>
+            {% endfor %}
+        </p>
+    </form>
     <form action="" method="post">
         {{ form.hidden_tag() }}
+        <p>
+            <select name="teams">
+                {% for team in teams %}
+                <option value="{{ team }}">{{ team }}</option>
+                {% endfor %}
+            </select>
+        </p>
         <p>
             {{ form.username.label }}<br>
             {{ form.username(size=32) }}<br>
             {% for error in form.username.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
-        <p>
-            {{ form.fav_squad.label }}<br>
-            {{ form.fav_squad(cols=50, rows=4) }}<br>
         </p>
         <p>{{ form.submit() }}</p>
     </form>

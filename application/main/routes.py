@@ -23,7 +23,13 @@ from datetime import datetime
 @bp.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
-
+    session['leagues'] = {
+        "La Liga": "PD",
+        "Serie A": "SA",
+        "Ligue 1": "FL1",
+        "Bundesliga": "BL1",
+        "Premier League": "PL"
+    }
     # get league
     session['league'] = request.form.get('button', 'PL')
 
@@ -236,7 +242,7 @@ def user(username):
     
     return render_template('main/user.html',
                     user=current_user, 
-                    logo=connect.logo('PL', current_user.fav_squad),
+                    logo=current_user.fav_squad_logo,
                     ranking=ranking,
                     current_season = session['season'],
                     league = session['league'],
@@ -247,8 +253,6 @@ def user(username):
 @bp.route('/history/<username>')
 @login_required
 def history(username):
-
-    # MAKE A LEAGUE LIST
     
     page = request.args.get('page', 1, type=int)
 
@@ -279,18 +283,30 @@ def history(username):
 @login_required
 def edit_profile():
 
-    # let the user change username and choose squad
+    if not session.get('league_team'):
+        session['league_team'] = 'PL'
+    teams = connect.team(session['league_team'])
     form = EditProfileForm(current_user.username)
+    form.username.data = current_user.username
+
+    if request.form.get('button_league'):
+        session['league_team'] = request.form.get('button_league')
+        teams = connect.team(session['league_team'])
+
     if form.validate_on_submit():
         current_user.username = form.username.data
-        current_user.fav_squad = form.fav_squad.data
+        current_user.fav_squad = request.form.get('teams')
+        current_user.fav_squad_logo = connect.logo(session['league_team'],request.form.get('teams'))
         db.session.commit()
         flash('Los cambios han sido guardados')
-        return redirect(url_for('edit_profile'))
-    elif request.method == 'GET':
-        form.username.data = current_user.username
-        form.fav_squad.data = current_user.fav_squad
-    return render_template('main/edit_profile.html', title='Editar Perfil', form=form)
+        return redirect(url_for('main.edit_profile'))
+
+    return render_template(
+        'main/edit_profile.html',
+        title='Editar Perfil',
+        form=form,
+        leagues = session['leagues'],
+        teams = teams)
 
 
 @bp.route('/bet', methods=['GET', 'POST'])
