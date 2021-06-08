@@ -1,0 +1,26 @@
+version: '3.0'
+
+services:
+  app:
+    build: .
+    command: python enter.py run -h 0.0.0.0 -p 5000
+    ports:
+      - 5000:5000
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+  db:
+    image: postgres:13-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_USER: ${PSQL_USER}
+      POSTGRES_PASSWORD: ${PSQL_PASS}
+      POSTGRES_DB: ${PSQL_DB}
+  redis:
+    image: redis:latest
+
+volumes:
+  postgres_data:

@@ -1,7 +1,12 @@
 {% extends "base.html" %} 
 
 {% block content %}
+    {% if current_user.is_anonymous %}
+    <h6>¿No ingresaste?<a href="{{ url_for('auth.login') }}">¡Hacelo aquí!</a></h6>
+    {% else %}
     <h1>¡Hola {{ current_user.username }}!</h1>
+    {% endif %}
+    
     {% if fixture %}
     <h3>Temporada {{ fixture[0].season }}</h3>
 

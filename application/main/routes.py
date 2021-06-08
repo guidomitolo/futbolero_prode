@@ -21,7 +21,6 @@ from datetime import datetime
 
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
-@login_required
 def index():
 
     session['leagues'] = {
@@ -33,7 +32,7 @@ def index():
     }
 
     current_round = None
-    session['tabla'] = None
+    tabla = session.get('tabla')
     remaining = None
 
     # get league, Premier League by default
@@ -49,9 +48,10 @@ def index():
     else:
         session['season'] = datetime.now().date().year
     
-    # if not session.get('fixture') or request.method == 'POST':
-    #     session['fixture'] = connect.fixture(session['league'], session['season'])
-    #     session['tabla'], session['logos'] = connect.standings(session['league'], session['season'])
+    if not session.get('fixture') or request.method == 'POST':
+        session['fixture'] = connect.fixture(session['league'], session['season'])
+        session['tabla'], session['logos'] = connect.standings(session['league'], session['season'])
+        tabla = session['tabla']
     
     # if connextion succesfull
     if session.get('fixture'):     
@@ -142,10 +142,12 @@ def index():
                 else:
                     if match['score'][0] != None:
                         remaining.remove(match)
-     
+
+
+
     return render_template("main/index.html", 
         title='Bienvenido', 
-        table=session['tabla'], 
+        table=tabla, 
         fixture=current_round,
         postponed = remaining
     )
