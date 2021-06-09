@@ -15,22 +15,30 @@ Session managment is based on flask-session library on redis. After logging in, 
 
 ## Deploy
 
- 1- Set environment variables or create .env
+1- Set environment variables or create .env
+
+a- postgres config vars
 
 ```
-PGPASSWD=SuperPassword
 PSQL_PASS=SuperPassword
-REDIS_PASSWORD=SuperPassword 
+PSQL_USER=YourPSQLuser
+PSQL_HOST_DB=DockerNamedDB
 ```
 
- 2- Execute the db commands to create and migrate the database
+b- redis config vars
 
 ```
-flask db init
-flask db migrate
-flask db upgrade
+REDIS_HOST=redis
 ```
-3- Deploy through docker-compose
+
+c. set api key
+
+```
+API_KEY=SomeAPIKey
+```
+Get an api key from https://www.football-data.org/
+
+2- Deploy through docker-compose
 
 ```
 docker-compose up -d
