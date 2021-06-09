@@ -20,9 +20,8 @@ class Config():
     PSQL_PASS = os.environ.get('PSQL_PASS')
     PSQL_USER = os.environ.get('PSQL_USER')
     PSQL_DB_NAME = os.environ.get('PSQL_DB_NAME')
-    PSQL_HOST_DB = os.environ.get('PSQL_HOST_DB')
 
-    SQLALCHEMY_DATABASE_URI = f"postgresql://{PSQL_USER}:{PSQL_PASS}@{PSQL_HOST_DB}:5432/futbolero"
+    SQLALCHEMY_DATABASE_URI = f"postgresql://{PSQL_USER}:{PSQL_PASS}@db:5432/futbolero"
     
     SQLALCHEMY_TRACK_MODIFICATIONS = os.environ.get('SQLALCHEMY_TRACK_MODIFICATIONS')
 
