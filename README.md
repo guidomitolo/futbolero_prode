@@ -22,7 +22,7 @@ a. postgres config vars
 ```
 PSQL_PASS=SuperPassword
 PSQL_USER=YourPSQLuser
-PSQL_HOST_DB=DockerNamedDB
+PSQL_HOST=DockerNamedDB
 ```
 
 b. redis config vars
