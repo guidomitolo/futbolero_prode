@@ -13,14 +13,14 @@ Flask-Session==0.3.2
 Flask-SQLAlchemy==2.5.1
 Flask-WTF==0.15.1
 greenlet==1.1.0
+gunicorn==20.1.0
 idna==2.10
 itsdangerous==2.0.1
 Jinja2==3.0.1
 Mako==1.1.4
 MarkupSafe==2.0.1
-gunicorn==20.1.0
+Pillow==8.2.0
 psycopg2-binary==2.8.6
-
 python-dateutil==2.8.1
 python-dotenv==0.17.1
 python-editor==1.0.4

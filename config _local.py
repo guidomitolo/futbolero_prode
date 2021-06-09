@@ -19,10 +19,11 @@ class Config():
     # postgres + orm config
     PSQL_PASS = os.environ.get('PSQL_PASS')
     PSQL_USER = os.environ.get('PSQL_USER')
-    PSQL_DB_NAME = os.environ.get('PSQL_DB_NAME')
-    PSQL_HOST_DB = os.environ.get('PSQL_HOST_DB')
+    PSQL_HOST = os.environ.get('PSQL_HOST')
 
-    SQLALCHEMY_DATABASE_URI = f"postgresql://{PSQL_USER}:{PSQL_PASS}@{PSQL_HOST_DB}:5432/{PSQL_DB_NAME}"
+    print(PSQL_HOST)
+
+    SQLALCHEMY_DATABASE_URI = f"postgresql://postgres:jeanluc@localhost:5432/futbolero"
     
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -35,13 +36,12 @@ class Config():
     REDIS_HOST = os.environ.get('REDIS_HOST')
 
     SESSION_REDIS = redis.Redis(
-        host=REDIS_HOST, 
+        host='localhost', 
         port=6379, 
         db=0, 
-        # password=REDIS_PASSWORD
+        password=REDIS_PASSWORD
     )
 
     # mail server config
     ADM_MAIL = os.environ.get('ADM_MAIL')
     ADM_PASS = os.environ.get('ADM_PASS')
-

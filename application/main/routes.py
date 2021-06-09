@@ -9,6 +9,7 @@ from sqlalchemy.sql.expression import null
 from application import current_app as app
 from application.main import bp
 from application.auth.models import User
+from application.posts.models import Post
 from application.main.models import Points, Bets, Seasons
 from application import db
 from application.main.forms import EditProfileForm, GamblingForm
@@ -47,21 +48,35 @@ def index():
         session['season'] = datetime.now().date().year - 1
     else:
         session['season'] = datetime.now().date().year
+
+    if not session.get('fixture'):
+        try:
+            for key, value in session.get('leagues').items():
+                session[f'{value}'] = connect.fixture(value, session['season'])
+                session[f'tabla_{value}'], session[f'logos_{value}'] = connect.standings(value, session['season'])
+            
+            session['fixture'] = session.get(value)
+            tabla = session[f'tabla_{value}']
+        except:
+            session['fixture'] = None
+
+    if request.method == 'POST':
+        for key, value in session.get('leagues').items():
+            if value == request.form.get('button', 'PL'):
+                session['league']  = value
+                session['fixture'] = session[session['league']]
     
-    if not session.get('fixture') or request.method == 'POST':
-        session['fixture'] = connect.fixture(session['league'], session['season'])
-        session['tabla'], session['logos'] = connect.standings(session['league'], session['season'])
-        tabla = session['tabla']
-    
+    tabla = session[f"tabla_{session['league']}"]
+
     # if connextion succesfull
     if session.get('fixture'):     
-        # add logo for each team in fixture
-        for team in session['fixture']:
-            for logo in session['logos'] :
-                if team['homeTeam'] == logo['team']:
-                    team['homelogo'] = logo['teamlogo']
-                if team['awayTeam'] == logo['team']:
-                    team['awaylogo'] = logo['teamlogo']
+        for key, value in session.get('leagues').items():
+            for team in session[value]:
+                for logo in session[f'logos_{value}'] :
+                    if team['homeTeam'] == logo['team']:
+                        team['homelogo'] = logo['teamlogo']
+                    if team['awayTeam'] == logo['team']:
+                        team['awaylogo'] = logo['teamlogo']
 
 
         # get current round matches and currrent round first date
@@ -77,23 +92,25 @@ def index():
             for bet in user_bets:
                 bet_points = Points.query.filter(Points.user_id==user.id, Points.match_id==bet.match_id).first()
                 if not bet_points:
-                    for match in session['fixture']:
-                        if bet.match_id == match['matchID']:
-                            if match['score'][0] is not None or match['score'][0] is not null:
-                                user_points = helpers.score(bet.score_home, match['score'][0], match['score'][1], bet.score_away)
-                                hits = 0
-                                if user_points == 6:
-                                    hits =+ 1
-                                load_points = Points(
-                                    user_id=user.id,
-                                    match_id=match['matchID'],
-                                    points = user_points,
-                                    hits = hits,
-                                    season = session['season'],
-                                    league = session['league']
-                                )
-                                db.session.add(load_points)
-                                db.session.commit()
+                    # check bets in all leagues
+                    for key, value in session.get('leagues'):
+                        for match in session[value]:
+                            if bet.match_id == match['matchID']:
+                                if match['score'][0] is not None or match['score'][0] is not null:
+                                    user_points = helpers.score(bet.score_home, match['score'][0], match['score'][1], bet.score_away)
+                                    hits = 0
+                                    if user_points == 6:
+                                        hits =+ 1
+                                    load_points = Points(
+                                        user_id=user.id,
+                                        match_id=match['matchID'],
+                                        points = user_points,
+                                        hits = hits,
+                                        season = session['season'],
+                                        league = session['league']
+                                    )
+                                    db.session.add(load_points)
+                                    db.session.commit()
 
 
         # check for not past/present/future not played games
@@ -142,14 +159,15 @@ def index():
                 else:
                     if match['score'][0] != None:
                         remaining.remove(match)
-
-
+    
+    posts = Post.query.order_by(Post.timestamp.desc()).limit(5).all()
 
     return render_template("main/index.html", 
         title='Bienvenido', 
         table=tabla, 
         fixture=current_round,
-        postponed = remaining
+        postponed = remaining,
+        posts = posts,
     )
 
 
@@ -163,8 +181,9 @@ def user(username):
     league = None
     winners = None
 
-    # get past winners
-    past_winners = Seasons.query.filter(Seasons.league == session['league'], Seasons.finished == True).all()
+    image_file = None
+    if current_user.image:
+        image_file = url_for('static', filename="profile_pics/"+ current_user.image)
 
     users_points = db.session.query(
         Points.user_id, 
@@ -189,8 +208,7 @@ def user(username):
                         'points': users_points[row][1],
                         'hits': users_points[row][2]
                         })
-
-
+    
     if not session.get('fixture'):
         flash("Por problemas de conexión con la API, los datos pueden estar desactualizados")
         if request.method == 'POST':
@@ -199,17 +217,7 @@ def user(username):
         # get league with post
         if request.method == 'POST':
             session['league'] = request.form.get('button')
-            session['tabla'], session['logos'] = connect.standings(session['league'], session['season'])
-            session['fixture'] = connect.fixture(session['league'], session['season'])
-            
-            # add logo for each team in fixture
-            for team in session['fixture']:
-                for logo in session['logos'] :
-                    if team['homeTeam'] == logo['team']:
-                        team['homelogo'] = logo['teamlogo']
-                    if team['awayTeam'] == logo['team']:
-                        team['awaylogo'] = logo['teamlogo']
-
+            session['fixture'] = session[f"{session['league']}"]
 
         # check if season has ended in current session. if so, name winner
         if not helpers.pending(session['fixture']):
@@ -259,8 +267,31 @@ def user(username):
                     ranking=ranking,
                     current_season = session['season'],
                     league = session['league'],
-                    winners = past_winners
+                    user_image = image_file
                     )
+
+@bp.route('/debate', methods=['GET', 'POST'])
+@login_required
+def debate():
+
+    page = request.args.get('page', 1, type=int)
+
+    posts = Post.query\
+        .order_by(Post.timestamp.desc())\
+        .paginate(page=page, per_page=5)
+
+    if request.method == 'POST':
+        session['league'] = request.form.get('button')
+        session['fixture'] = session[session['league']]
+        
+    past_winners = Seasons.query.filter(Seasons.league == session['league'], Seasons.finished == True).all()
+    return render_template(
+        'main/debate.html', 
+        winners=past_winners, 
+        league=session.get('league'), 
+        posts=posts
+    )
+
 
 
 @bp.route('/history/<username>')
@@ -290,17 +321,29 @@ def history(username):
         .paginate(page, app.config['ROWS_PER_PAGE'], False)
 
         historial = helpers.get_history(session['fixture'], user_points.items, user_bets.items, session['season'])
-
+        
         next_url = url_for('history', username=current_user.username, page = user_bets.next_num) if user_bets.has_next else None
         prev_url = url_for('history', username=current_user.username, page = user_bets.prev_num) if user_bets.has_prev else None
         
 
-    return render_template('main/history.html', user=username, history=historial, next_url=next_url, prev_url=prev_url)
+    return render_template('main/history.html', 
+        user=username,
+        fixture=session.get('fixture'),
+        history=historial,
+        next_url=next_url,
+        prev_url=prev_url
+    )
 
 
 @bp.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
+
+    user = User.query.filter_by(username=current_user.username).first_or_404()
+    
+    image_file = None
+    if user.image:
+        image_file = url_for('static', filename="profile_pics/"+ user.image)
 
     leagues = session['leagues']
 
@@ -313,26 +356,33 @@ def edit_profile():
         leagues = None
 
     form = EditProfileForm(current_user.username)
-    form.username.data = current_user.username
 
     if request.form.get('button_league'):
         session['league_team'] = request.form.get('button_league')
         teams = connect.team(session['league_team'])
 
     if form.validate_on_submit():
+        if form.user_pic.data:
+            picture_file = helpers.save_picture(form.user_pic.data)
+            current_user.image = picture_file
         current_user.username = form.username.data
         current_user.fav_squad = request.form.get('teams')
         current_user.fav_squad_logo = connect.logo(session['league_team'],request.form.get('teams'))
         db.session.commit()
         flash('Los cambios han sido guardados')
         return redirect(url_for('main.edit_profile'))
+    elif request.method == 'GET':
+        form.username.data = current_user.username
 
     return render_template(
         'main/edit_profile.html',
         title='Editar Perfil',
         form=form,
         leagues = leagues,
-        teams = teams)
+        teams = teams,
+        user = user,
+        user_image = image_file
+        )
 
 
 @bp.route('/bet', methods=['GET', 'POST'])

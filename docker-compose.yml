@@ -6,8 +6,9 @@ services:
     command: gunicorn --bind 0.0.0.0:5000 enter:app
     volumes:
       - ./application/templates/main:/futbolero/application/templates/main
-      - ./application/templates/main:/futbolero/application/templates/auth
-      - ./application/templates/main:/futbolero/application/static
+      - ./application/templates/auth:/futbolero/application/templates/auth
+      - ./application/templates/posts:/futbolero/application/templates/posts
+      - ./application/static:/futbolero/application/static
     ports:
       - 5000:5000
     env_file:

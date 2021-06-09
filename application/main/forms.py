@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField
+from wtforms import StringField, SubmitField
 from wtforms import FormField, FieldList, IntegerField, Form
 from wtforms.validators import ValidationError, DataRequired
+from flask_wtf.file import FileField, FileAllowed
 from application.auth.models import User
 
 
@@ -13,6 +14,7 @@ class EditProfileForm(FlaskForm):
         self.original_username = original_username
 
     username = StringField('Nombre de usuario', validators=[DataRequired()])
+    user_pic = FileField('Foto Carné', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Guardar')
 
     def validate_username(self, username):

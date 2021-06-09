@@ -61,6 +61,7 @@
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('main.history', username=current_user.username) }}">Historial</a></li>
                         {% endif %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('main.user', username=current_user.username) }}">Perfil</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.debate') }}">Debate</a></li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('auth.logout') }}">
                                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-left" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

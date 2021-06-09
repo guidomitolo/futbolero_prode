@@ -107,4 +107,33 @@
     <h4>Conexión con API no responde</h4>
     <p>Por favor volver a intentar en breve</p>
     {% endif %}
+
+
+    <article>
+    Debate
+    {% for post in posts %}
+        {% if post.author.image %}
+        <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image) }}">
+        {% else %}
+        <img src="{{ post.author.avatar(128) }}">
+        {% endif %}
+        <div class="media-body">
+        <div class="article-metadata">
+            <p>{{ post.author.username }}
+            <small class="text-muted">{{ moment(post.timestamp).format('LLL') }}</small>
+            </p>
+        </div>
+        {% if current_user.is_anonymous %}
+        <p>{{ post.body }}</p>
+        {% else %}
+        <a class="article-content" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.body }}</a>
+        {% endif %}
+    </div>
+    {% endfor %}
+    </article>
+
+    {% block scripts %}
+    {{ moment.include_moment() }}
+    {% endblock %}
+
 {% endblock %}

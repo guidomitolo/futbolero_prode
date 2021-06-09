@@ -16,7 +16,10 @@ class User(UserMixin, db.Model):
     fav_squad_logo = db.Column(db.String(128))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
 
+    image = db.Column(db.String(20))
+
     # db relationship lets the user db be connected with the other dbs
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
     rank = db.relationship('Points', backref='user_points', lazy='dynamic')
     bet = db.relationship('Bets', lazy='dynamic')
     winner = db.relationship('Seasons', backref='user_winner', lazy='dynamic')

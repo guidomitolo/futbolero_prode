@@ -2,17 +2,16 @@
 
 {% block content %}
     <h2>Editar Perfil</h2>
+    <form action="" method="post" enctype="multipart/form-data">
     {% if leagues %}
     <p>Equipo</p>
-    <form action="" method="post">
         <p>
             {% for key, value in leagues.items() %}
             <button type="submit" name="button_league" value="{{ value }}">{{ key }}</button>
             {% endfor %}
         </p>
-    </form>
-    <form action="" method="post">
-        {{ form.hidden_tag() }}
+    {% endif %}
+    {{ form.hidden_tag() }}
         <p>
             <select name="teams">
                 {% for team in teams %}
@@ -20,8 +19,14 @@
                 {% endfor %}
             </select>
         </p>
-    {% endif %}
         <p>
+            {{ form.user_pic.label }}<br>
+            {% if user_image %}
+            <img src="{{ user_image }}"><br>
+            {% else %}
+            <td><img src="{{ user.avatar(128) }}"></td><br>
+            {% endif %}
+            {{ form.user_pic }}<br><br>
             {{ form.username.label }}<br>
             {{ form.username(size=32) }}<br>
             {% for error in form.username.errors %}

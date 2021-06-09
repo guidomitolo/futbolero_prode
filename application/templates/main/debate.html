@@ -1,0 +1,96 @@
+{% extends "base.html" %} 
+
+{% block content %}
+
+<div class="row">
+    <div class="col-6">
+        Debate
+        {% for post in posts.items %}
+            {% if post.author.image %}
+            <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image) }}">
+            {% else %}
+            <img src="{{ post.author.avatar(128) }}">
+            {% endif %}
+            <div class="media-body">
+            <div class="article-metadata">
+                <p>{{ post.author.username }}
+                
+                <small class="text-muted">{{ moment(post.timestamp).format('LLL') }}</small>
+                </p>
+            </div>
+            <a class="article-content" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.body }}</a>
+            </div>
+        {% endfor %}
+        <br>
+        <a href="{{ url_for('posts.new_post') }}">Postear</a>
+        <br>
+        <br>
+
+        {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+        {% if page_num %}
+          {% if posts.page == page_num %}
+            <a class="btn btn-info mb-4" href="{{ url_for('main.debate', page=page_num) }}">{{ page_num }}</a>
+          {% else %}
+            <a class="btn btn-outline-info mb-4" href="{{ url_for('main.debate', page=page_num) }}">{{ page_num }}</a>
+          {% endif %}
+        {% else %}
+          ...
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <div class="col-6">
+        <form method="POST">
+            <button type="submit" name="button" value="PD">La Liga</button>
+            <button type="submit" name="button" value="SA">Serie A</button>
+            <button type="submit" name="button" value="FL1">Ligue 1</button>
+            <button type="submit" name="button" value="BL1">Bundesliga</button>
+            <button type="submit" name="button" value="PL">Premier League</button>
+        </form>
+        
+        {% if winners %}
+        <h3>Ganadores Históricos</h3>
+        <table class='table table-striped' style='line-height: 14px; text-align:center;'>
+            <thead>
+                <tr>
+                    <td>Liga</td>
+                    <td>Temporada</td>
+                    <td>Nombre</td>
+                    <td>Puntos</td>
+                    <td>Hits</td>
+                </tr>
+            </thead>
+            <body>
+                {% for winner in winners %}
+                <tr>
+                    <td>{{ winner.league }}</td>
+                    <td>{{ winner.season }}</td>
+                    {% if not winner.user_winner.username %}
+                    <td>Vacante</td>
+                    {% else %}
+                    <td>{{ winner.user_winner.username }}</td>
+                    {% endif %}
+ 
+                    {% if not winner.total_points %}
+                    <td>-</td>
+                    {% else %}
+                    <td><b>{{ winner.total_points }}</b></td>
+                    {% endif %}
+
+                    {% if not winner.matches_hits %}
+                    <td>-</td>
+                    {% else %}
+                    <td><b>{{ winner.matches_hits }}</b></td>
+                    {% endif %}
+                    
+                </tr>
+                {% endfor %}
+            </body>
+        </table>
+        {% else %}
+        <p>No se registraron apuestas para la temporada {{ current_season }} de la {{ league }}</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

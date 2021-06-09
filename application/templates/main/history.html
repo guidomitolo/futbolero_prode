@@ -2,45 +2,49 @@
 
 {% block content %}
     <h2>Registro de apuestas y puntos</h2>
-    {% if history %}
-        <table class='table table-striped' style="margin-top:20px; text-align: center; line-height: 14px;">
-            <thead style="vertical-align: middle;">
-                <tr>
-                    <th>Fecha</th>
-                    <th>Local</th>
-                    <th>Goles<br>Local</th>
-                    <th>Apuesta<br>Local</th>
-                    <th>Visitante</th>
-                    <th>Goles<br>Visitante</th>
-                    <th>Apuesta<br>Visitante</th>
-                    <th>Puntos</th>
-                    <th>Temporada</th>
-                </tr>
-            </thead>
-            <tbody>    
-                {% for row in history %}
+    {% if fixture %}
+        {% if history %}
+            <table class='table table-striped' style="margin-top:20px; text-align: center; line-height: 14px;">
+                <thead style="vertical-align: middle;">
                     <tr>
-                        <td>{{ row.round }}</td>
-                        <td align="right">{{ row.homeTeam }}</td>
-                        <td align="center">{{ row.score_home }}</td>
-                        <td align="center">{{ row.bet_local}}</td>
-                        <td>{{ row.awayTeam }}</td>
-                        <td align="center">{{ row.score_away }}</td>
-                        <td align="center">{{ row.bet_away }}</td>
-                        <td><b>{{ row.points }}</b></td>
-                        <td>{{ row.season }}</td>
+                        <th>Fecha</th>
+                        <th>Local</th>
+                        <th>Goles<br>Local</th>
+                        <th>Apuesta<br>Local</th>
+                        <th>Visitante</th>
+                        <th>Goles<br>Visitante</th>
+                        <th>Apuesta<br>Visitante</th>
+                        <th>Puntos</th>
+                        <th>Temporada</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% if prev_url %}
-        <a href="{{ prev_url }}">Back</a>
-        {% endif %}
-        {% if next_url %}
-        <a href="{{ next_url }}">More</a>
+                </thead>
+                <tbody>    
+                    {% for row in history %}
+                        <tr>
+                            <td>{{ row.round }}</td>
+                            <td align="right">{{ row.homeTeam }}</td>
+                            <td align="center">{{ row.score_home }}</td>
+                            <td align="center">{{ row.bet_local}}</td>
+                            <td>{{ row.awayTeam }}</td>
+                            <td align="center">{{ row.score_away }}</td>
+                            <td align="center">{{ row.bet_away }}</td>
+                            <td><b>{{ row.points }}</b></td>
+                            <td>{{ row.season }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% if prev_url %}
+            <a href="{{ prev_url }}">Back</a>
+            {% endif %}
+            {% if next_url %}
+            <a href="{{ next_url }}">More</a>
+            {% endif %}
+        {% else %}
+            <p>No se han cargado apuestas</p>
         {% endif %}
     {% else %}
-        <h4>Conexión con API no responde</h4>
-        <p>Por favor volver a intentar en breve</p>
+    <h4>Conexión con API no responde</h4>
+    <p>Por favor volver a intentar en breve</p>
     {% endif %}
 {% endblock %}
