@@ -21,9 +21,7 @@ class Config():
     PSQL_USER = os.environ.get('PSQL_USER')
     PSQL_HOST = os.environ.get('PSQL_HOST')
 
-    print(PSQL_HOST)
-
-    SQLALCHEMY_DATABASE_URI = f"postgresql://postgres:jeanluc@localhost:5432/futbolero"
+    SQLALCHEMY_DATABASE_URI = f"postgresql://{PSQL_USER}:{PSQL_PASS}@{PSQL_HOST}:5432/futbolero"
     
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
