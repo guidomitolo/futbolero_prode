@@ -1,9 +1,13 @@
-version: '3.0'
+version: '3.8'
 
 services:
   app:
     build: .
     command: gunicorn --bind 0.0.0.0:5000 enter:app
+    volumes:
+      - ./application/templates/main:/futbolero/application/templates/main
+      - ./application/templates/main:/futbolero/application/templates/auth
+      - ./application/templates/main:/futbolero/application/static
     ports:
       - 5000:5000
     env_file:
@@ -18,7 +22,7 @@ services:
     environment:
       POSTGRES_USER: ${PSQL_USER}
       POSTGRES_PASSWORD: ${PSQL_PASS}
-      POSTGRES_DB: ${PSQL_DB}
+      POSTGRES_DB: ${PSQL_DB_NAME}
   redis:
     image: redis:latest
 
