@@ -109,5 +109,9 @@
         <p>No se registraron apuestas para la temporada {{ current_season }} de la {{ league }}</p>
         {% endif %}
     </div>
+
+    {% block scripts %}
+        {{ moment.include_moment() }}
+    {% endblock %}
     
 {% endblock %}
