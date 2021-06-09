@@ -41,5 +41,5 @@ Get an api key from https://www.football-data.org/
 #### 2- Deploy through docker-compose
 
 ```
-docker-compose up -d
+docker-compose up -d --build
 ```
