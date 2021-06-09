@@ -43,7 +43,7 @@ def create_app(config_class=Config):
         from application.main import bp as main_bp
         app.register_blueprint(main_bp)
 
-        # from application import routes, models, errors, helpers, connect
+        from application import errors
         
         from application.auth.models import User
         from application.main.models import Bets, Points, Seasons
@@ -55,6 +55,10 @@ def create_app(config_class=Config):
         @login.user_loader
         def load_user(id):
             return User.query.get(int(id))
+
+        # create the database on deployment
+        db.create_all()
+        db.session.commit()
 
         if not app.debug:
 
